@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDCET Online Test: એકમો અને માપન</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        #timer-box {
+            position: sticky;
+            top: 10px;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .question-card {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            background: #fafafa;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .options label:hover {
+            background: #eef7ff;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-submit:hover {
+            background: #219150;
+        }
+
+        .result-section {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            border: 1px dashed var(--secondary-color);
+        }
+
+        .correct { color: var(--success-color); font-weight: bold; }
+        .wrong { color: var(--error-color); font-weight: bold; }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>DDCET Preparation: એકમો અને માપન</h1>
+        <p>કુલ પ્રશ્નો: 50 | સમય: 60 મિનિટ | કુલ ગુણ: 50</p>
+        <div id="timer-box">સમય બાકી: <span id="timer">60:00</span></div>
+    </header>
+
+    <form id="quiz-form">
+        <div id="questions-container"></div>
+        <button type="button" class="btn-submit" onclick="submitQuiz()">ટેસ્ટ સબમિટ કરો</button>
+    </form>
+
+    <div id="result" class="result-section">
+        <h2>તમારું પરિણામ</h2>
+        <p id="score-text" style="font-size: 1.5rem; font-weight: bold;"></p>
+        <button class="btn-submit" onclick="location.reload()" style="background: var(--secondary-color);">ટેસ્ટ ફરીથી આપો</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "નીચેનામાંથી કઈ ભૌતિક રાશિ મૂળભૂત નથી?",
+        a: "બળ",
+        o: ["લંબાઈ", "દળ", "સમય", "બળ"],
+        ex: "બળ એ સાધિત રાશિ છે (F=ma), જ્યારે લંબાઈ, દળ અને સમય મૂળભૂત રાશિઓ છે. [cite: 10, 12]"
+    },
+    {
+        q: "SI પદ્ધતિમાં જ્યોતિ તીવ્રતાનો એકમ શું છે?",
+        a: "કેન્ડેલા",
+        o: ["મોલ", "એમ્પિયર", "કેન્ડેલા", "કેલ્વિન"],
+        ex: "જ્યોતિ તીવ્રતાનો SI એકમ કેન્ડેલા (cd) છે. [cite: 14]"
+    },
+    {
+        q: "1 Newton (N) = ________ dyne?",
+        a: "10^5",
+        o: ["10^3", "10^5", "10^7", "10^4"],
+        ex: "1 N = 1 kg·m/s² = 10³g · 10²cm/s² = 10⁵ dyne. [cite: 142, 617]"
+    },
+    {
+        q: "જો લંબાઈના માપનમાં 2% ત્રુટિ હોય, તો ક્ષેત્રફળના માપનમાં કેટલી પ્રતિશત ત્રુટિ હશે?",
+        a: "4%",
+        o: ["2%", "4%", "8%", "1%"],
+        ex: "ક્ષેત્રફળ A = L². ત્રુટિ = 2 × ΔL/L = 2 × 2% = 4%. [cite: 708, 713]"
+    },
+    {
+        q: "વર્નિયર કેલિપર્સમાં 1 MSD = 1mm અને વર્નિયર સ્કેલ પર 10 વિભાગ હોય, તો તેનું લઘુતમ માપ (LC) કેટલું?",
+        a: "0.1 mm",
+        o: ["0.01 mm", "0.1 mm", "0.05 mm", "0.02 mm"],
+        ex: "LC = MSD / N = 1mm / 10 = 0.1 mm. [cite: 188, 205]"
+    },
+    {
+        q: "1 m² = ________ cm²?",
+        a: "10^4",
+        o: ["100", "1000", "10000", "10^6"],
+        ex: "1 m = 100 cm, તેથી (100 cm)² = 10,000 cm². [cite: 122, 583]"
+    },
+    {
+        q: "માઈક્રોમીટર સ્ક્રૂ ગેજમાં સ્ક્રૂ એક પરિભ્રમણ પૂર્ણ કરે ત્યારે કાપેલા અંતરને શું કહે છે?",
+        a: "પેચ",
+        o: ["લઘુતમ માપ", "પેચ", "ત્રુટિ", "વર્નિયર અંક"],
+        ex: "સ્ક્રૂ એક પૂર્ણ પરિભ્રમણ કરે ત્યારે ખસતા અંતરને પેચ (Pitch) કહે છે. [cite: 236, 247]"
+    },
+    {
+        q: "0.005308 માં સાર્થક અંકોની સંખ્યા કેટલી છે?",
+        a: "4",
+        o: ["7", "3", "4", "5"],
+        ex: "નિયમ મુજબ, પ્રથમ શૂન્યેતર અંકની ડાબી બાજુના શૂન્યો સાર્થક નથી. તેથી 5,3,0,8 સાર્થક છે. [cite: 453, 755]"
+    },
+    {
+        q: "ઘનતાનો MKS એકમ kg/m³ ને cgs માં ફેરવતા શું મળે?",
+        a: "10^-3 g/cm³",
+        o: ["10^3 g/cm³", "10^-3 g/cm³", "1 g/cm³", "10^6 g/cm³"],
+        ex: "1 kg/m³ = 1000g / (100cm)³ = 10³/10⁶ = 10⁻³ g/cm³. [cite: 120, 616]"
+    },
+    {
+        q: "1 Joule = ________ Erg?",
+        a: "10^7",
+        o: ["10^5", "10^7", "10^-7", "10^10"],
+        ex: "કાર્યનો MKS એકમ જૂલ અને CGS એકમ અર્ગ છે. 1 J = 10⁷ Erg. [cite: 607, 637]"
+    },
+    {
+        q: "પ્રવેગ (Acceleration) નો SI એકમ કયો છે?",
+        a: "m/s²",
+        o: ["m/s", "m·s", "m/s²", "kg·m/s"],
+        ex: "પ્રવેગ = વેગમાં ફેરફાર / સમય = (m/s) / s = m/s². [cite: 47, 515]"
+    },
+    {
+        q: "નીચેનામાંથી કઈ પૂરક (Supplementary) રાશિ છે?",
+        a: "સમતલકોણ",
+        o: ["દળ", "વેગ", "સમતલકોણ", "તાપમાન"],
+        ex: "સમતલકોણ (Radian) અને ઘનકોણ (Steradian) પૂરક રાશિઓ છે. [cite: 518, 1021]"
+    },
+    {
+        q: "1 Angstrom (Å) = ________ m?",
+        a: "10^-10",
+        o: ["10^-8", "10^-10", "10^-15", "10^-9"],
+        ex: "1 Å = 10⁻¹⁰ મીટર. [cite: 25, 531]"
+    },
+    {
+        q: "માઈક્રોમીટર સ્ક્રૂ ગેજમાં પેચ 0.5 mm અને વિભાગ 50 હોય તો LC શોધો.",
+        a: "0.01 mm",
+        o: ["0.1 mm", "0.01 mm", "0.001 mm", "0.05 mm"],
+        ex: "LC = Pitch / No. of divisions = 0.5 / 50 = 0.01 mm. [cite: 264]"
+    },
+    {
+        q: "સરેરાશ મૂલ્ય અને વ્યક્તિગત માપેલા મૂલ્યના તફાવતને શું કહે છે?",
+        a: "નિરપેક્ષ ત્રુટિ",
+        o: ["સાપેક્ષ ત્રુટિ", "પ્રતિશત ત્રુટિ", "નિરપેક્ષ ત્રુટિ", "વ્યવસ્થિત ત્રુટિ"],
+        ex: "સાચા મૂલ્ય અને પ્રાયોગિક મૂલ્યના તફાવતને નિરપેક્ષ ત્રુટિ કહે છે. [cite: 297, 652]"
+    },
+    {
+        q: "1 light year (પ્રકાશવર્ષ) એ શેનો એકમ છે?",
+        a: "અંતર",
+        o: ["સમય", "અંતર", "પ્રકાશની તીવ્રતા", "વેગ"],
+        ex: "પ્રકાશવર્ષ એ અંતર માપવાનો મોટો એકમ છે. [cite: 27, 1119]"
+    },
+    {
+        q: "જો કોઈ સાધનની લઘુતમ માપશક્તિ ઓછી હોય, તો તેની સચોટતા (Precision):",
+        a: "વધારે હોય",
+        o: ["ઓછી હોય", "વધારે હોય", "બદલાતી નથી", "શૂન્ય હોય"],
+        ex: "જે સાધનનું લઘુતમ માપ નાનું, તેની સચોટતા વધુ. [cite: 169, 439]"
+    },
+    {
+        q: "1 kg = ________ µg (Microgram)?",
+        a: "10^9",
+        o: ["10^6", "10^3", "10^9", "10^12"],
+        ex: "1 kg = 10³ g, 1 g = 10⁶ µg. તેથી 1 kg = 10⁹ µg. [cite: 1344, 1348]"
+    },
+    {
+        q: "તાપમાનનો SI એકમ કયો છે?",
+        a: "કેલ્વિન",
+        o: ["સેલ્સિયસ", "ફેરનહીટ", "કેલ્વિન", "કેલરી"],
+        ex: "થર્મોડાયનેમિક તાપમાનનો SI એકમ કેલ્વિન (K) છે. [cite: 14, 1064]"
+    },
+    {
+        q: "બે રાશિઓના ભાગાકારમાં મહત્તમ સાપેક્ષ ત્રુટિ કેટલી હોય?",
+        a: "બંનેની સાપેક્ષ ત્રુટિના સરવાળા જેટલી",
+        o: ["બંનેના તફાવત જેટલી", "બંનેના ગુણાકાર જેટલી", "બંનેની સાપેક્ષ ત્રુટિના સરવાળા જેટલી", "શૂન્ય"],
+        ex: "ભાગાકાર કે ગુણાકારમાં સાપેક્ષ ત્રુટિઓનો હંમેશા સરવાળો થાય. [cite: 466, 712]"
+    },
+    {
+        q: "1 Fermi = ________ m?",
+        a: "10^-15",
+        o: ["10^-12", "10^-15", "10^-10", "10^-6"],
+        ex: "1 Fermi (fm) = 10⁻¹⁵ મીટર. [cite: 30, 529]"
+    },
+    {
+        q: "વેગમાન (Momentum) નો એકમ શું છે?",
+        a: "kg m/s",
+        o: ["kg m/s²", "kg m/s", "Newton", "Joule"],
+        ex: "વેગમાન = દળ × વેગ = kg × m/s. [cite: 68, 556]"
+    },
+    {
+        q: "વર્નિયર કેલિપર્સનો ઉપયોગ શું માપવા થાય છે?",
+        a: "આપેલ તમામ",
+        o: ["નળાકારનો વ્યાસ", "રિંગનો અંદરનો વ્યાસ", "ઊંડાઈ", "આપેલ તમામ"],
+        ex: "વર્નિયર કેલિપર્સથી બહારનો વ્યાસ, અંદરનો વ્યાસ અને ઊંડાઈ માપી શકાય છે. [cite: 163, 793]"
+    },
+    {
+        q: "દબાણ (Pressure) નો SI એકમ કયો છે?",
+        a: "પાસ્કલ",
+        o: ["ન્યૂટન", "પાસ્કલ", "વોટ", "જૂલ"],
+        ex: "દબાણ = બળ / ક્ષેત્રફળ = N/m², જેને પાસ્કલ (Pa) કહે છે. [cite: 67, 556]"
+    },
+    {
+        q: "1 AU (Astronomical Unit) ની કિંમત કેટલી?",
+        a: "1.496 x 10^11 m",
+        o: ["9.46 x 10^15 m", "1.496 x 10^11 m", "3.08 x 10^16 m", "1.5 x 10^8 m"],
+        ex: "પૃથ્વી અને સૂર્ય વચ્ચેનું સરેરાશ અંતર 1 AU = 1.496 × 10¹¹ m. [cite: 26, 552]"
+    },
+    {
+        q: "પદાર્થનો જથ્થો (Amount of Substance) શેમાં મપાય છે?",
+        a: "મોલ",
+        o: ["કિલોગ્રામ", "ગ્રામ", "મોલ", "કેન્ડેલા"],
+        ex: "દ્રવ્યના જથ્થાનો SI એકમ મોલ (mol) છે. [cite: 14, 503]"
+    },
+    {
+        q: "જો કોઈ માપનમાં ધન ત્રુટિ હોય, તો સાચું માપ મેળવવા શું કરવું પડે?",
+        a: "ધન ત્રુટિ બાદ કરવી પડે",
+        o: ["ધન ત્રુટિ ઉમેરવી પડે", "ધન ત્રુટિ બાદ કરવી પડે", "કંઈ કરવાની જરૂર નથી", "બે વડે ગુણવા પડે"],
+        ex: "ધન ત્રુટિ હોય તો અવલોકનમાંથી તેને બાદ (ઋણ સુધારો) કરવી પડે. [cite: 209]"
+    },
+    {
+        q: "આવૃત્તિ (Frequency) નો એકમ શું છે?",
+        a: "Hertz",
+        o: ["Second", "Hertz", "Meter", "Radian"],
+        ex: "આવૃત્તિ = 1/આવર્તકાળ, તેનો એકમ s⁻¹ અથવા Hertz (Hz) છે. [cite: 75, 556]"
+    },
+    {
+        q: "1 micro meter / 1 femto meter = ?",
+        a: "10^9",
+        o: ["10^3", "10^6", "10^9", "10^12"],
+        ex: "10⁻⁶ / 10⁻¹⁵ = 10⁹. [cite: 855]"
+    },
+    {
+        q: "નીચેનામાંથી કઈ ભૂલ (Error) વ્યક્તિગત બેકાળજીથી ઉદ્ભવે છે?",
+        a: "વ્યક્તિગત ત્રુટિ",
+        o: ["સાધનની ત્રુટિ", "વ્યક્તિગત ત્રુટિ", "પ્રયોગ પદ્ધતિની ત્રુટિ", "બાહ્ય પરિબળની ત્રુટિ"],
+        ex: "અવલોકનકારની અણઆવડત કે બેકાળજીને વ્યક્તિગત ત્રુટિ કહે છે. [cite: 281, 650]"
+    },
+    {
+        q: "કોણીય વેગ (Angular Velocity) નો એકમ શું છે?",
+        a: "rad/s",
+        o: ["m/s", "rad/s", "degree/s", "rad/s²"],
+        ex: "કોણીય વેગ = કોણીય સ્થાનાંતર / સમય = rad / s. [cite: 562, 564]"
+    },
+    {
+        q: "સમતલકોણનો એકમ રેડિયન છે, તો ઘનકોણનો એકમ કયો?",
+        a: "સ્ટીરેડિયન",
+        o: ["રેડિયન", "સ્ટીરેડિયન", "ડિગ્રી", "મોલ"],
+        ex: "SI પદ્ધતિમાં ઘનકોણનો એકમ સ્ટીરેડિયન (sr) છે. [cite: 518, 1090]"
+    },
+    {
+        q: "36 km/h = ________ m/s?",
+        a: "10",
+        o: ["5", "10", "18", "20"],
+        ex: "36 × (1000/3600) = 36 × (5/18) = 10 m/s. [cite: 144, 599]"
+    },
+    {
+        q: "સાર્થક સંખ્યા 124.00 માં સાર્થક અંકો કેટલા છે?",
+        a: "5",
+        o: ["3", "4", "5", "2"],
+        ex: "દશાંશ ચિહ્ન પછીના અંતિમ શૂન્યો સાર્થક ગણાય છે. [cite: 765]"
+    },
+    {
+        q: "કાર્ય (Work) નું પારિમાણિક સૂત્ર શું થાય?",
+        a: "M1 L2 T-2",
+        o: ["M1 L1 T-2", "M1 L2 T-2", "M1 L2 T-1", "M2 L1 T-2"],
+        ex: "કાર્ય = બળ × અંતર = (M¹L¹T⁻²) × L = M¹L²T⁻². [cite: 626]"
+    },
+    {
+        q: "1 parsec = ________ m?",
+        a: "3.08 x 10^16 m",
+        o: ["3.08 x 10^15 m", "3.08 x 10^16 m", "9.46 x 10^15 m", "1.49 x 10^11 m"],
+        ex: "1 પાર્સેક (pc) એ અંતરનો સૌથી મોટો એકમ છે. [cite: 551, 1205]"
+    },
+    {
+        q: "રેડિયો એક્ટિવિટીનો એકમ શું છે?",
+        a: "Becquerel",
+        o: ["Curie", "Becquerel", "Hertz", "Joule"],
+        ex: "SI પદ્ધતિમાં રેડિયો એક્ટિવિટીનો એકમ બેકવેરલ (Bq) છે. [cite: 518, 1109]"
+    },
+    {
+        q: "વિદ્યુતપ્રવાહનો મૂળભૂત SI એકમ કયો છે?",
+        a: "Ampere",
+        o: ["Volt", "Ohm", "Ampere", "Coulomb"],
+        ex: "વિદ્યુતપ્રવાહનો SI એકમ એમ્પિયર (A) છે. [cite: 14, 503]"
+    },
+    {
+        q: "સાદા લોલકના પ્રયોગમાં g = 4π²L/T² માં L માં 1% અને T માં 2% ત્રુટિ હોય તો g માં કેટલી?",
+        a: "5%",
+        o: ["3%", "5%", "4%", "6%"],
+        ex: "Δg/g = ΔL/L + 2(ΔT/T) = 1% + 2(2%) = 5%. [cite: 412, 416]"
+    },
+    {
+        q: "1 micro (µ) એટલે કેટલા?",
+        a: "10^-6",
+        o: ["10^-3", "10^-9", "10^-6", "10^-12"],
+        ex: "માઈક્રો (micro) પૂર્વગ 10⁻⁶ માટે વપરાય છે. [cite: 28, 535]"
+    },
+    {
+        q: "વર્નિયર કેલિપર્સમાં જો વર્નિયરનો શૂન્ય મુખ્ય સ્કેલના શૂન્યની ડાબી બાજુ હોય તો તેને કઈ ત્રુટિ કહેવાય?",
+        a: "ઋણ ત્રુટિ",
+        o: ["ધન ત્રુટિ", "ઋણ ત્રુટિ", "વ્યક્તિગત ત્રુટિ", "શૂન્ય ત્રુટિ"],
+        ex: "જો ડાબી બાજુ આવે તો ઋણ ત્રુટિ કહેવાય. [cite: 208]"
+    },
+    {
+        q: "પાવર (Power) નો એકમ કયો છે?",
+        a: "Watt",
+        o: ["Joule", "Watt", "Newton", "Pascal"],
+        ex: "પાવર = કાર્ય / સમય = J/s, જેને વોટ (W) કહે છે. [cite: 49, 556]"
+    },
+    {
+        q: "ગુરુત્વાકર્ષણનો અચળાંક (G) નો એકમ કયો છે?",
+        a: "N m^2 kg^-2",
+        o: ["N m/kg", "N m^2 kg^-2", "N kg/m^2", "J m/kg"],
+        ex: "F = G m₁m₂/r² પરથી G = F r² / m₁m₂ = N·m²/kg². [cite: 562, 1730]"
+    },
+    {
+        q: "1 nanometer = ________ Angstrom?",
+        a: "10",
+        o: ["1", "10", "100", "0.1"],
+        ex: "1 nm = 10⁻⁹ m, 1 Å = 10⁻¹⁰ m. તેથી 1 nm = 10 Å. [cite: 531, 533]"
+    },
+    {
+        q: "લેન્સના પાવરનો એકમ શું છે?",
+        a: "Dioptre",
+        o: ["Watt", "Dioptre", "Meter", "Candela"],
+        ex: "લેન્સનો પાવર P = 1/f (કેન્દ્રલંબાઈ), જેનો એકમ m⁻¹ અથવા ડાયોપ્ટર (D) છે. [cite: 567]"
+    },
+    {
+        q: "સાર્થક સંખ્યા 0.007 માં સાર્થક અંકો કેટલા?",
+        a: "1",
+        o: ["1", "2", "3", "4"],
+        ex: "નિયમ મુજબ આગળના શૂન્યો સાર્થક નથી. માત્ર 7 સાર્થક છે. [cite: 768]"
+    },
+    {
+        q: "1 metric ton = ________ kg?",
+        a: "1000",
+        o: ["100", "500", "1000", "10000"],
+        ex: "વ્યવહારમાં 1 ટન એટલે 1000 કિલોગ્રામ. [સામાન્ય વિજ્ઞાન]"
+    },
+    {
+        q: "વિદ્યુતભાર (Charge) નો એકમ શું છે?",
+        a: "Coulomb",
+        o: ["Ampere", "Volt", "Coulomb", "Ohm"],
+        ex: "વિદ્યુતભાર Q = I × t, તેનો એકમ કુલંબ (C) છે. [cite: 562]"
+    },
+    {
+        q: "વિશિષ્ટ ઉષ્મા (Specific Heat) નો એકમ કયો છે?",
+        a: "J / (kg K)",
+        o: ["Joule", "Calorie", "J / (kg K)", "Watt / K"],
+        ex: "વિશિષ્ટ ઉષ્મા c = Q / (m ΔT) = J / (kg·K). [cite: 562]"
+    },
+    {
+        q: "1 Mega Meter = ________ micro meter?",
+        a: "10^12",
+        o: ["10^6", "10^9", "10^12", "10^3"],
+        ex: "1 Mm = 10⁶ m, 1 µm = 10⁻⁶ m. ગુણોત્તર = 10⁶ / 10⁻⁶ = 10¹². [cite: 1405]"
+    }
+];
+
+let timeLeft = 3600;
+let timerId;
+
+function initQuiz() {
+    const container = document.getElementById('questions-container');
+    quizData.forEach((data, index) => {
+        const div = document.createElement('div');
+        div.className = 'question-card';
+        div.innerHTML = `
+            <p><strong>પ્રશ્ન ${index + 1}:</strong> ${data.q}</p>
+            <div class="options">
+                ${data.o.map(opt => `
+                    <label>
+                        <input type="radio" name="q${index}" value="${opt}">
+                        ${opt}
+                    </label>
+                `).join('')}
+            </div>
+            <div id="ex${index}" class="explanation">
+                <strong>સાચો જવાબ: <span class="correct">${data.a}</span></strong><br>
+                <em>સમજૂતી:</em> ${data.ex}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+
+    startTimer();
+}
+
+function startTimer() {
+    timerId = setInterval(() => {
+        timeLeft--;
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        document.getElementById('timer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerId);
+            submitQuiz();
+        }
+    }, 1000);
+}
+
+function submitQuiz() {
+    clearInterval(timerId);
+    let score = 0;
+    
+    quizData.forEach((data, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        const explanationDiv = document.getElementById(`ex${index}`);
+        explanationDiv.style.display = 'block';
+
+        if (selected) {
+            if (selected.value === data.a) {
+                score++;
+                selected.parentElement.style.background = "#d4edda";
+            } else {
+                selected.parentElement.style.background = "#f8d7da";
+            }
+        }
+        
+        // Disable all inputs
+        const options = document.getElementsByName(`q${index}`);
+        options.forEach(opt => opt.disabled = true);
+    });
+
+    document.getElementById('quiz-form').style.opacity = "0.8";
+    const resultDiv = document.getElementById('result');
+    resultDiv.style.display = 'block';
+    document.getElementById('score-text').innerText = `તમારો સ્કોર: ${score} / 50`;
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
