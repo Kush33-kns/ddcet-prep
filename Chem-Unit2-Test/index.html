@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDCET Chemistry Unit 2 - 100 MCQ Test</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        body { font-family: 'Segoe UI', 'Arial', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+        .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--light); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .timer { font-size: 1.2rem; font-weight: bold; color: var(--danger); background: #fee; padding: 5px 15px; border-radius: 20px; border: 1px solid var(--danger); }
+        .progress-bar { height: 10px; background: var(--light); border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+        .progress { height: 100%; background: var(--secondary); width: 0%; transition: 0.4s cubic-bezier(0.1, 0.7, 1.0, 0.1); }
+        .question-box { min-height: 250px; }
+        .question { font-size: 1.25rem; font-weight: 600; margin-bottom: 20px; color: var(--primary); line-height: 1.5; }
+        .options { display: grid; gap: 12px; }
+        .option { padding: 15px; border: 2px solid var(--light); border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1rem; display: flex; align-items: center; }
+        .option:hover { background: #f0f7ff; border-color: var(--secondary); }
+        .option.selected { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--light); padding-top: 20px; }
+        button { padding: 12px 28px; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: 0.3s; }
+        .btn-next { background: var(--secondary); color: white; }
+        .btn-next:hover { background: #2980b9; }
+        .btn-submit { background: var(--success); color: white; display: none; }
+        #result-screen { display: none; text-align: center; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 25px 0; }
+        .stat-card { padding: 15px; background: var(--light); border-radius: 8px; }
+        .stat-val { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .review-item { text-align: left; padding: 15px; border-bottom: 1px solid #eee; margin-bottom: 10px; border-radius: 8px; }
+        .review-q { font-weight: bold; margin-bottom: 8px; }
+        .ans-row { font-size: 0.95rem; margin: 4px 0; }
+        .correct-label { color: var(--success); font-weight: bold; }
+        .wrong-label { color: var(--danger); font-weight: bold; }
+        .perf-msg { font-size: 1.4rem; margin: 15px 0; font-weight: bold; }
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .question { font-size: 1.1rem; }
+            button { width: 48%; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <div id="quiz-ui">
+        <div class="header">
+            <h2 style="margin:0; font-size: 1.2rem; color: var(--dark);">DDCET Chemistry Unit 2 Test</h2>
+            <div class="timer" id="time-display">60:00</div>
+        </div>
+        <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        
+        <div class="question-box">
+            <div id="q-number" style="font-weight: bold; color: var(--secondary); margin-bottom: 5px;">Question 1 of 100</div>
+            <div class="question" id="question-text">Loading Questions...</div>
+            <div class="options" id="options-container"></div>
+        </div>
+
+        <div class="footer">
+            <button class="btn-next" onclick="prevQuestion()" id="prev-btn" style="background: #95a5a6; visibility: hidden;">Previous</button>
+            <button class="btn-next" onclick="nextQuestion()" id="next-btn">Next</button>
+            <button class="btn-submit" onclick="confirmSubmit()" id="submit-btn">Finish Test</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h1 style="color: var(--primary);">Test Summary</h1>
+        <div id="performance-icon"></div>
+        <div class="perf-msg" id="performance-msg"></div>
+        
+        <div class="stat-grid">
+            <div class="stat-card"><div>Total Score</div><div class="stat-val" id="res-score">0</div></div>
+            <div class="stat-card"><div>Percentage</div><div class="stat-val" id="res-percent">0%</div></div>
+            <div class="stat-card"><div>Correct</div><div class="stat-val" id="res-correct" style="color: var(--success);">0</div></div>
+            <div class="stat-card"><div>Wrong (-0.25)</div><div class="stat-val" id="res-wrong" style="color: var(--danger);">0</div></div>
+        </div>
+
+        <button onclick="location.reload()" style="background: var(--secondary); color: white; margin-bottom: 20px;">Restart Test</button>
+        
+        <h3 style="border-top: 2px solid var(--light); padding-top: 20px;">Detailed Review</h3>
+        <div id="review-container"></div>
+    </div>
+</div>
+
+<script>
+/**
+ * DDCET Level Questions - Unit 2: Acids, Bases and Salts
+ */
+const rawQuestions = [
+    { question: "ભીના વાદળી લિટમસ પેપરને લાલ બનાવનાર પદાર્થ કયો હોઈ શકે?", options: ["લીંબુનો રસ", "ખાવાનો સોડા", "ચૂનાનું પાણી", "સાબુનું દ્રાવણ"], answer: 0 },
+    { question: "મિથાઈલ ઓરેન્જ સૂચક એસિડિક દ્રાવણમાં કયો રંગ આપે છે?", options: ["લાલ", "પીળો", "વાદળી", "નારંગી"], answer: 0 },
+    { question: "એસિડ અને બેઇઝ વચ્ચેની પ્રક્રિયાને શું કહે છે?", options: ["તટસ્થીકરણ", "ઓક્સિડેશન", "રિડક્શન", "જળવિભાજન"], answer: 0 },
+    { question: "મોંની pH કેટલાથી ઘટે ત્યારે દાંતનું ક્ષયન (સડો) શરૂ થાય છે?", options: ["5.5", "6.5", "7.0", "4.5"], answer: 0 },
+    { question: "પ્લાસ્ટર ઓફ પેરિસનું સાચું રાસાયણિક સૂત્ર કયું છે?", options: ["CaSO4.1/2H2O", "CaSO4.2H2O", "CaSO4.H2O", "2CaSO4.H2O"], answer: 0 },
+    { question: "બ્લીચિંગ પાઉડરનું રાસાયણિક નામ શું છે?", options: ["કેલ્શિયમ ઓક્સિક્લોરાઇડ", "કેલ્શિયમ ક્લોરાઇડ", "કેલ્શિયમ કાર્બોનેટ", "સોડિયમ ક્લોરાઇડ"], answer: 0 },
+    { question: "જઠરમાં ખોરાકના પાચન માટે કયો એસિડ ઉત્પન્ન થાય છે?", options: ["હાઈડ્રોક્લોરિક એસિડ", "સલ્ફ્યુરિક એસિડ", "એસિટિક એસિડ", "સાઇટ્રિક એસિડ"], answer: 0 },
+    { question: "શુદ્ધ પાણીની pH કેટલી હોય છે?", options: ["7", "1", "14", "0"], answer: 0 },
+    { question: "કૌવચ (Nettle) ના ડંખમાં કયો એસિડ હાજર હોય છે?", options: ["મિથેનોઇક એસિડ", "લેક્ટિક એસિડ", "સાઇટ્રિક એસિડ", "ટાર્ટરિક એસિડ"], answer: 0 },
+    { question: "વોશિંગ સોડાનું રાસાયણિક સૂત્ર શું છે?", options: ["Na2CO3.10H2O", "NaHCO3", "NaOH", "Na2CO3.H2O"], answer: 0 },
+    { question: "ઝિંક ધાતુની મંદ HCl સાથેની પ્રક્રિયાથી કયો વાયુ મુક્ત થાય છે?", options: ["હાઈડ્રોજન", "ઓક્સિજન", "ક્લોરિન", "નાઈટ્રોજન"], answer: 0 },
+    { question: "ફિનોલ્ફથેલિન સૂચક બેઝિક દ્રાવણમાં કયો રંગ આપે છે?", options: ["ગુલાબી", "લાલ", "રંગવિહીન", "વાદળી"], answer: 0 },
+    { question: "નિસ્યંદિત પાણી વિદ્યુતનું વહન કેમ કરતું નથી?", options: ["તેમાં આયનો હોતા નથી", "તેમાં એસિડ હોય છે", "તે તટસ્થ નથી", "તેમાં અશુદ્ધિઓ છે"], answer: 0 },
+    { question: "મિલ્ક ઓફ મેગ્નેશિયાનો ઉપયોગ ક્યાં થાય છે?", options: ["એન્ટાસિડ તરીકે", "ખાતર તરીકે", "જંતુનાશક તરીકે", "રંગકામમાં"], answer: 0 },
+    { question: "લાઇમસ્ટોન (ચૂનાના પથ્થર) નું રાસાયણિક સૂત્ર શું છે?", options: ["CaCO3", "CaO", "Ca(OH)2", "CaCl2"], answer: 0 },
+    { question: "એસિડિક જમીનને તટસ્થ કરવા ખેડૂત તેમાં શું ઉમેરે છે?", options: ["લાઈમ (CaO)", "જિપ્સમ", "મીઠું", "યુરિયા"], answer: 0 },
+    { question: "સોડિયમ ઝિંકેટનું સાચું સૂત્ર કયું છે?", options: ["Na2ZnO2", "NaZnO2", "Na2Zn2O", "NaZn2O2"], answer: 0 },
+    { question: "હળદરના ડાઘા પર સાબુ ઘસતા તે લાલ કેમ બને છે?", options: ["સાબુ બેઝિક છે", "સાબુ એસિડિક છે", "હળદર એસિડિક છે", "બંને તટસ્થ છે"], answer: 0 },
+    { question: "બ્લીચિંગ પાઉડરની બનાવટમાં કયો વાયુ વપરાય છે?", options: ["ક્લોરિન", "હાઈડ્રોજન", "ઓક્સિજન", "નાઈટ્રોજન"], answer: 0 },
+    { question: "આંબલીમાં કયો એસિડ હોય છે?", options: ["ટાર્ટરિક એસિડ", "સાઇટ્રિક એસિડ", "એસિટિક એસિડ", "ઓક્ઝેલિક એસિડ"], answer: 0 },
+    { question: "જિપ્સમને 373 K તાપમાને ગરમ કરવાથી શું બને છે?", options: ["POP", "ચૂનો", "સોડા", "ક્ષાર"], answer: 0 },
+    { question: "તટસ્થ ક્ષારની pH કેટલી હોય છે?", options: ["7", "7 થી વધુ", "7 થી ઓછી", "0"], answer: 0 },
+    { question: "ખાવાના સોડાનું રાસાયણિક નામ શું છે?", options: ["સોડિયમ હાઈડ્રોજન કાર્બોનેટ", "સોડિયમ કાર્બોનેટ", "સોડિયમ હાઈડ્રોક્સાઈડ", "સોડિયમ ક્લોરાઈડ"], answer: 0 },
+    { question: "કઈ ધાતુ મંદ એસિડ સાથે પ્રક્રિયા કરી હાઈડ્રોજન મુક્ત કરતી નથી?", options: ["કોપર (Cu)", "ઝિંક (Zn)", "મેગ્નેશિયમ (Mg)", "આયર્ન (Fe)"], answer: 0 },
+    { question: "દૂધમાં કયો એસિડ હોય છે?", options: ["લેક્ટિક એસિડ", "સાઇટ્રિક એસિડ", "એસિટિક એસિડ", "ટાર્ટરિક એસિડ"], answer: 0 },
+    { question: "ધાતુના ઓક્સાઈડ કેવો સ્વભાવ ધરાવે છે?", options: ["બેઝિક", "એસિડિક", "તટસ્થ", "ઉભયધર્મી"], answer: 0 },
+    { question: "અધાતુના ઓક્સાઈડ કેવો સ્વભાવ ધરાવે છે?", options: ["એસિડિક", "બેઝિક", "તટસ્થ", "ઉભયધર્મી"], answer: 0 },
+    { question: "ચૂનાના પાણીમાં CO2 પસાર કરતા તે દૂધિયું કેમ બને છે?", options: ["CaCO3 ના લીધે", "CaO ના લીધે", "Ca(OH)2 ના લીધે", "CaCl2 ના લીધે"], answer: 0 },
+    { question: "pH પેપર પર જઠરરસનો રંગ કેવો હોય છે?", options: ["લાલ", "વાદળી", "લીલો", "રંગવિહીન"], answer: 0 },
+    { question: "કોપર ઓક્સાઈડની HCl સાથેની પ્રક્રિયાથી દ્રાવણનો રંગ કેવો થાય છે?", options: ["વાદળી-લીલો", "લાલ", "પીળો", "રંગવિહીન"], answer: 0 },
+    // Adding more unique questions to reach 100 for DDCET preparation
+    { question: "ક્લોર-આલ્કલી પ્રક્રિયામાં કઈ નીપજો મળે છે?", options: ["NaOH, Cl2, H2", "NaCl, Cl2, H2", "NaOH, O2, H2", "NaHCO3, Cl2"], answer: 0 },
+    { question: "બ્લૅકબોર્ડ પર લખવાના ચોક શેના બનેલા હોય છે?", options: ["કેલ્શિયમ કાર્બોનેટ", "કેલ્શિયમ સલ્ફેટ", "સોડિયમ કાર્બોનેટ", "જિપ્સમ"], answer: 0 },
+    { question: "ખાવાના સોડાને ગરમ કરતા કયો વાયુ મુક્ત થાય છે?", options: ["CO2", "H2", "O2", "Cl2"], answer: 1 },
+    { question: "બેકિંગ પાઉડર એ કયા પદાર્થોનું મિશ્રણ છે?", options: ["બેકિંગ સોડા + ટાર્ટરિક એસિડ", "બેકિંગ સોડા + એસિટિક એસિડ", "વોશિંગ સોડા + એસિડ", "સોડા એશ"], answer: 0 },
+    { question: "શુષ્ક HCl વાયુ લિટમસ પત્ર પર અસર કેમ કરતો નથી?", options: ["H+ આયનો મુક્ત થતા નથી", "તે એસિડ નથી", "તે બેઝ છે", "તે વાયુ છે"], answer: 0 },
+    { question: "લોહીની pH અંદાજે કેટલી હોય છે?", options: ["7.4", "6.8", "8.2", "7.0"], answer: 0 },
+    { question: "ટામેટામાં કયો એસિડ હોય છે?", options: ["ઓક્ઝેલિક એસિડ", "સાઇટ્રિક એસિડ", "લેક્ટિક એસિડ", "એસિટિક એસિડ"], answer: 0 },
+    { question: "દૂધિયું દ્રાવણ (Milk of Lime) નું સૂત્ર શું છે?", options: ["Ca(OH)2", "CaO", "CaCO3", "CaSO4"], answer: 0 },
+    { question: "સોડા-એસિડ અગ્નિશામકમાં શું વપરાય છે?", options: ["NaHCO3", "Na2CO3", "NaOH", "NaCl"], answer: 0 },
+    { question: "દાંતનું ઉપરનું આવરણ (Enamel) શેનું બનેલું હોય છે?", options: ["કેલ્શિયમ ફોસ્ફેટ", "કેલ્શિયમ કાર્બોનેટ", "કેલ્શિયમ ઓક્સાઈડ", "કેલ્શિયમ ક્લોરાઈડ"], answer: 0 },
+    { question: "વિનેગરમાં કેટલા ટકા એસિટિક એસિડ હોય છે?", options: ["5-8%", "10-20%", "1-2%", "50%"], answer: 0 },
+    { question: "કોપર સલ્ફેટના સ્ફટિકનો રંગ કેવો હોય છે?", options: ["વાદળી", "સફેદ", "લીલો", "લાલ"], answer: 0 },
+    { question: "સ્ફટિક જળ દૂર કરવા કોપર સલ્ફેટને ગરમ કરતા તે કેવો બને છે?", options: ["સફેદ", "વાદળી", "પીળો", "કાળો"], answer: 0 },
+    { question: "બેઝિક ઓક્સાઈડ કયા છે?", options: ["Na2O", "SO2", "CO2", "NO2"], answer: 0 },
+    { question: "એસિડિક ઓક્સાઈડ કયા છે?", options: ["SO3", "MgO", "CaO", "K2O"], answer: 0 },
+    { question: "પ્રબળ એસિડ કયો છે?", options: ["HCl", "CH3COOH", "H2CO3", "HCN"], answer: 0 },
+    { question: "નિર્બળ બેઝ કયો છે?", options: ["NH4OH", "NaOH", "KOH", "Ca(OH)2"], answer: 0 },
+    { question: "તટસ્થીકરણ પ્રક્રિયામાં અંતિમ નીપજો કઈ હોય છે?", options: ["ક્ષાર અને પાણી", "એસિડ અને બેઝ", "ધાતુ અને હાઈડ્રોજન", "વાયુ અને પાણી"], answer: 0 },
+    { question: "સાંદ્ર સલ્ફ્યુરિક એસિડને મંદ કરતી વખતે પાત્ર કેવું લાગે છે?", options: ["ગરમ", "ઠંડુ", "સ્થિર", "ભીનું"], answer: 0 },
+    { question: "કઈ પ્રક્રિયા ઉષ્માક્ષેપક છે?", options: ["એસિડનું મંદન", "જિપ્સમની બનાવટ", "તટસ્થ ક્ષારનું ઓગળવું", "પાણીનું બાષ્પીભવન"], answer: 0 },
+    { question: "ખાટા ફળોમાં કયો એસિડ હોય છે?", options: ["સાઇટ્રિક એસિડ", "લેક્ટિક એસિડ", "ઓક્ઝેલિક એસિડ", "ટાર્ટરિક એસિડ"], answer: 0 },
+    { question: "કીડીના ડંખમાં કયો એસિડ હોય છે?", options: ["ફોર્મિક એસિડ (મિથેનોઇક)", "એસિટિક એસિડ", "લેક્ટિક એસિડ", "સાઇટ્રિક એસિડ"], answer: 0 },
+    { question: "સોડિયમ હાઈડ્રોક્સાઈડનો ઉપયોગ ક્યાં થાય છે?", options: ["સાબુ બનાવવામાં", "ખોરાકમાં", "અગ્નિશામકમાં", "દાંત ચોખ્ખા કરવા"], answer: 0 },
+    { question: "પાણીની કાયમી કઠિનતા દૂર કરવા શું વપરાય છે?", options: ["વોશિંગ સોડા", "બેકિંગ સોડા", "બ્લીચિંગ પાઉડર", "POP"], answer: 0 },
+    { question: "બોરેક્સની બનાવટમાં કયું સોડિયમ સંયોજન વપરાય છે?", options: ["સોડિયમ કાર્બોનેટ", "સોડિયમ ક્લોરાઈડ", "સોડિયમ હાઈડ્રોક્સાઈડ", "સોડિયમ નાઈટ્રેટ"], answer: 0 },
+    { question: "હાઇડ્રોનિયમ આયન એટલે શું?", options: ["H3O+", "OH-", "H+", "H2O"], answer: 0 },
+    { question: "એસિડિક ક્ષારનું ઉદાહરણ કયું છે?", options: ["NH4Cl", "CH3COONa", "NaCl", "KNO3"], answer: 0 },
+    { question: "બેઝિક ક્ષારનું ઉદાહરણ કયું છે?", options: ["CH3COONa", "NH4Cl", "KCl", "Na2SO4"], answer: 0 },
+    { question: "હાઇડ્રોજન વાયુની કસોટી માટે કયો પદાર્થ વપરાય છે?", options: ["સળગતી મીણબત્તી", "ચૂનાનું પાણી", "લિટમસ પત્ર", "pH પેપર"], answer: 0 },
+    { question: "CO2 વાયુની કસોટી માટે કયો પદાર્થ વપરાય છે?", options: ["ચૂનાનું પાણી", "પોટેશિયમ પરમેંગેનેટ", "લિટમસ", "મીણબત્તી"], answer: 0 },
+    { question: "ઘ્રાણેન્દ્રિય સૂચક કયો છે?", options: ["ડુંગળી", "લિટમસ", "હળદર", "મિથાઈલ ઓરેન્જ"], answer: 0 },
+    { question: "લવિંગનું તેલ કયા માધ્યમમાં વાસ ગુમાવે છે?", options: ["બેઝિક", "એસિડિક", "તટસ્થ", "કોઈ પણ નહીં"], answer: 0 },
+    { question: "હાઈડ્રોજન આયનની સાંદ્રતા માપવાનો માપક્રમ કયો છે?", options: ["pH માપક્રમ", "ટેમ્પરેચર સ્કેલ", "રિએક્ટર સ્કેલ", "બેરોમીટર"], answer: 0 },
+    { question: "pH માં 'p' શબ્દનો અર્થ શું થાય છે?", options: ["પોટેન્ઝ (શક્તિ)", "પાવર", "પરસેન્ટેજ", "પ્રેશર"], answer: 0 },
+    { question: "0 pH ધરાવતું દ્રાવણ કેવું કહેવાય?", options: ["અતિશય એસિડિક", "અતિશય બેઝિક", "તટસ્થ", "નિર્બળ"], answer: 0 },
+    { question: "14 pH ધરાવતું દ્રાવણ કેવું કહેવાય?", options: ["અતિશય બેઝિક", "અતિશય એસિડિક", "તટસ્થ", "શુદ્ધ"], answer: 0 },
+    { question: "લિચેન (Lichen) માંથી કયો સૂચક મેળવાય છે?", options: ["લિટમસ", "હળદર", "ફિનોલ્ફથેલિન", "ઓરેન્જ"], answer: 0 },
+    { question: "બ્લીચિંગ પાઉડરમાંથી કયા વાયુની વાસ આવે છે?", options: ["ક્લોરિન", "હાઈડ્રોજન", "ઓક્સિજન", "નાઈટ્રોજન"], answer: 0 },
+    { question: "બેકિંગ સોડાને ગરમ કરતા મળતો પદાર્થ કયો છે?", options: ["Na2CO3", "NaHCO3", "NaOH", "NaCl"], answer: 0 },
+    { question: "મધમાખીના ડંખના ઈલાજમાં શું વપરાય છે?", options: ["બેકિંગ સોડાનું દ્રાવણ", "એસિટિક એસિડ", "મીઠું", "લીંબુનો રસ"], answer: 0 },
+    { question: "કઠિન પાણીને નરમ બનાવવા કયો ક્ષાર વપરાય છે?", options: ["સોડિયમ કાર્બોનેટ", "સોડિયમ ક્લોરાઈડ", "કેલ્શિયમ કાર્બોનેટ", "પોટેશિયમ ક્લોરાઈડ"], answer: 0 },
+    { question: "POP નો સેટિંગ ટાઈમ વધારવા શું ઉમેરાય છે?", options: ["પાણી", "જિપ્સમ", "ચૂનો", "એસિડ"], answer: 0 },
+    { question: "રસાયણશાસ્ત્ર મુજબ મીઠું (Salt) શું છે?", options: ["આયનીય સંયોજન", "સહસંયોજક સંયોજન", "મિશ્રણ", "તત્વ"], answer: 0 },
+    { question: "જઠરની એસિડિટી ઘટાડવા કયો ક્ષાર વપરાય છે?", options: ["સોડિયમ હાઈડ્રોજન કાર્બોનેટ", "સોડિયમ સલ્ફેટ", "મેગ્નેશિયમ સલ્ફેટ", "સોડિયમ ક્લોરાઈડ"], answer: 0 },
+    { question: "સાબુની બનાવટમાં કયો બેઝ મુખ્યત્વે વપરાય છે?", options: ["NaOH", "Mg(OH)2", "NH4OH", "Al(OH)3"], answer: 0 },
+    { question: "લિટમસ દ્રાવણ મૂળભૂત રીતે કયા રંગનું હોય છે?", options: ["જાંબલી", "લાલ", "વાદળી", "પીળો"], answer: 0 },
+    { question: "લાલ કોબીજના પાન કેવો સૂચક છે?", options: ["કુદરતી", "કૃત્રિમ", "ઘ્રાણેન્દ્રિય", "નિરપેક્ષ"], answer: 0 },
+    { question: "હાઇડ્રોજન વાયુ હવા કરતા કેવો છે?", options: ["હલકો", "ભારે", "સમાન", "સ્થિર"], answer: 0 },
+    { question: "કાર્બન ડાયોક્સાઈડ વાયુ કેવો છે?", options: ["રંગહીન અને ગંધહીન", "તીવ્ર ગંધવાળો", "વાદળી રંગનો", "સળગતો"], answer: 0 },
+    { question: "એસિડના જલીય દ્રાવણમાં કયા આયનો વિદ્યુતનું વહન કરે છે?", options: ["H+", "OH-", "Na+", "Cl-"], answer: 0 },
+    { question: "સોડિયમ હાઈડ્રોક્સાઈડ અને HCl વચ્ચેની પ્રક્રિયા કઈ છે?", options: ["તટસ્થીકરણ", "સંયોગીકરણ", "વિઘટન", "વિસ્થાપન"], answer: 0 },
+    { question: "Zn + NaOH ની પ્રક્રિયાથી કયો વાયુ મુક્ત થાય છે?", options: ["H2", "O2", "Cl2", "CO2"], answer: 0 },
+    { question: "જિપ્સમનું રાસાયણિક નામ શું છે?", options: ["કેલ્શિયમ સલ્ફેટ ડાયહાઈડ્રેટ", "કેલ્શિયમ સલ્ફેટ હેમીહાઈડ્રેટ", "કેલ્શિયમ કાર્બોનેટ", "મેગ્નેશિયમ સલ્ફેટ"], answer: 0 },
+    { question: "આરસપહાણ (Marble) નું રાસાયણિક સૂત્ર શું છે?", options: ["CaCO3", "CaO", "Ca(OH)2", "CaCl2"], answer: 0 },
+    { question: "બેટરીના એસિડનું pH મૂલ્ય લગભગ કેટલું હોય છે?", options: ["0 થી 1", "7", "10", "14"], answer: 0 },
+    { question: "વરસાદી પાણીની pH 5.6 થી ઓછી હોય તો તેને શું કહેવાય?", options: ["એસિડ વર્ષા", "બેઝિક વર્ષા", "શુદ્ધ વર્ષા", "ઝેરી વર્ષા"], answer: 0 },
+    { question: "શરીરના કયા અંગમાં સૌથી ઓછી pH હોય છે?", options: ["જઠર", "મોં", "નાનું આંતરડું", "રુધિર"], answer: 0 },
+    { question: "ક્ષાર પરિવાર એટલે શું?", options: ["સમાન આયન ધરાવતા ક્ષારો", "એસિડિક ક્ષારો", "બેઝિક ક્ષારો", "દરિયાઈ ક્ષારો"], answer: 0 },
+    { question: "દરિયાના પાણીમાંથી કયો ક્ષાર સૌથી વધુ મળે છે?", options: ["NaCl", "KCl", "MgCl2", "CaSO4"], answer: 0 },
+    { question: "બ્લીચિંગ પાઉડરનો ઉપયોગ ટેક્સટાઈલ ઉદ્યોગમાં શા માટે થાય છે?", options: ["વિરંજન (રંગ દૂર કરવા)", "રંગવા માટે", "સફાઈ માટે", "ચળકાટ માટે"], answer: 0 },
+    { question: "ભજિયાં ફૂલાવવા માટે શું વપરાય છે?", options: ["બેકિંગ સોડા", "વોશિંગ સોડા", "ચૂનો", "મીઠું"], answer: 0 },
+    { question: "સોડિયમ કાર્બોનેટના જલીય દ્રાવણમાંથી CO2 પસાર કરતા શું મળે?", options: ["NaHCO3", "NaOH", "NaCl", "CaO"], answer: 0 },
+    { question: "કયો પદાર્થ ભેજ શોષી લે છે (Hygroscopic)?", options: ["નિર્જળ CaCl2", "NaCl", "CaCO3", "Sand"], answer: 0 },
+    { question: "પ્લાસ્ટર ઓફ પેરિસને ભેજમુક્ત પાત્રમાં કેમ રાખવામાં આવે છે?", options: ["તે જિપ્સમમાં ફેરવાઈ ન જાય તે માટે", "તે ઉડી ન જાય તે માટે", "રંગ બદલાય નહીં તે માટે", "વાસ ન આવે તે માટે"], answer: 0 },
+    { question: "કયો એસિડ કાચ પર કોતરણી કરવા વપરાય છે?", options: ["HF", "HCl", "HNO3", "H2SO4"], answer: 0 },
+    { question: "સાર્વત્રિક સૂચક (Universal Indicator) શું છે?", options: ["સૂચકોનું મિશ્રણ", "માત્ર લિટમસ", "એસિડ", "બેઝ"], answer: 0 },
+    { question: "પાણીમાં દ્રાવ્ય બેઝને શું કહે છે?", options: ["આલ્કલી", "આલ્કલાઈડ", "એસીડ", "ન્યુટ્રલ"], answer: 0 },
+    { question: "સોડિયમ ક્લોરાઈડના જલીય દ્રાવણને શું કહેવાય?", options: ["બ્રાઈન (Brine)", "બ્રોમાઈન", "એસિડ", "બેઝ"], answer: 0 },
+    { question: "નીચેનામાંથી કયો નિર્બળ એસિડ છે?", options: ["CH3COOH", "HCl", "H2SO4", "HNO3"], answer: 0 },
+    { question: "નીચેનામાંથી કયો પ્રબળ બેઝ છે?", options: ["NaOH", "NH4OH", "Mg(OH)2", "Cu(OH)2"], answer: 0 }
+];
+
+let quizData = [];
+let currentQ = 0;
+let score = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let userAnswers = [];
+let timeLeft = 3600; // 60 minutes
+let timer;
+
+// Function to shuffle array
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+// Prepare Quiz Data
+function prepareQuiz() {
+    quizData = JSON.parse(JSON.stringify(rawQuestions));
+    shuffle(quizData);
+    
+    // Shuffle options for each question and keep track of correct answer
+    quizData.forEach(q => {
+        let correctOptionText = q.options[q.answer];
+        shuffle(q.options);
+        q.answer = q.options.indexOf(correctOptionText);
+    });
+}
+
+function startTimer() {
+    timer = setInterval(() => {
+        timeLeft--;
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        document.getElementById('time-display').innerText = 
+            `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 300) { // Red timer for last 5 mins
+            document.getElementById('time-display').style.color = '#e74c3c';
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            autoSubmit();
+        }
+    }, 1000);
+}
+
+function loadQuestion() {
+    const q = quizData[currentQ];
+    document.getElementById('q-number').innerText = `Question ${currentQ + 1} of ${quizData.length}`;
+    document.getElementById('question-text').innerText = q.question;
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    
+    q.options.forEach((opt, idx) => {
+        const div = document.createElement('div');
+        div.className = 'option';
+        if (userAnswers[currentQ] === idx) div.classList.add('selected');
+        div.innerText = opt;
+        div.onclick = () => selectOption(idx);
+        container.appendChild(div);
+    });
+
+    // Update Progress Bar
+    document.getElementById('progress').style.width = `${((currentQ + 1) / quizData.length) * 100}%`;
+    
+    // Update Button Visibility
+    document.getElementById('prev-btn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+    
+    if (currentQ === quizData.length - 1) {
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+    } else {
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+}
+
+function selectOption(idx) {
+    userAnswers[currentQ] = idx;
+    const opts = document.querySelectorAll('.option');
+    opts.forEach(o => o.classList.remove('selected'));
+    opts[idx].classList.add('selected');
+}
+
+function nextQuestion() {
+    if (currentQ < quizData.length - 1) {
+        currentQ++;
+        loadQuestion();
+    }
+}
+
+function prevQuestion() {
+    if (currentQ > 0) {
+        currentQ--;
+        loadQuestion();
+    }
+}
+
+function confirmSubmit() {
+    let answered = userAnswers.filter(a => a !== undefined).length;
+    if (confirm(`તમે ${answered} પ્રશ્નોના જવાબ આપ્યા છે. શું તમે ટેસ્ટ પૂર્ણ કરવા માંગો છો?`)) {
+        showResults();
+    }
+}
+
+function autoSubmit() {
+    alert("સમય પૂરો થઈ ગયો છે! તમારી ટેસ્ટ ઓટોમેટિક સબમિટ થઈ રહી છે.");
+    showResults();
+}
+
+function showResults() {
+    clearInterval(timer);
+    document.getElementById('quiz-ui').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    
+    correctCount = 0;
+    wrongCount = 0;
+    
+    const reviewContainer = document.getElementById('review-container');
+    reviewContainer.innerHTML = '';
+
+    quizData.forEach((q, i) => {
+        const isCorrect = userAnswers[i] === q.answer;
+        const isSkipped = userAnswers[i] === undefined;
+        
+        if (isCorrect) correctCount++;
+        else if (!isSkipped) wrongCount++;
+
+        // Add to review
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+        reviewItem.style.backgroundColor = isCorrect ? '#f0fff4' : (isSkipped ? '#f9f9f9' : '#fff5f5');
+        
+        reviewItem.innerHTML = `
+            <div class="review-q">${i + 1}. ${q.question}</div>
+            <div class="ans-row">તમારો જવાબ: <span class="${isCorrect ? 'correct-label' : 'wrong-label'}">${isSkipped ? 'Answered Nothing' : q.options[userAnswers[i]]}</span></div>
+            <div class="ans-row">સાચો જવાબ: <span class="correct-label">${q.options[q.answer]}</span></div>
+        `;
+        reviewContainer.appendChild(reviewItem);
+    });
+
+    // Calculations
+    const finalScore = (correctCount * 1) - (wrongCount * 0.25);
+    const percentage = ((finalScore / quizData.length) * 100).toFixed(2);
+    
+    document.getElementById('res-score').innerText = finalScore.toFixed(2);
+    document.getElementById('res-percent').innerText = percentage + "%";
+    document.getElementById('res-correct').innerText = correctCount;
+    document.getElementById('res-wrong').innerText = wrongCount;
+
+    // Performance Message
+    let msg = "";
+    if (percentage >= 80) msg = "Excellent! 🏆";
+    else if (percentage >= 60) msg = "Good Effort! 👍";
+    else if (percentage >= 40) msg = "Average, Keep Studying! 📚";
+    else msg = "Need Improvement! ⚠️";
+    document.getElementById('performance-msg').innerText = msg;
+}
+
+// Initialize
+window.onload = () => {
+    prepareQuiz();
+    startTimer();
+    loadQuestion();
+};
+</script>
+</body>
+</html>
