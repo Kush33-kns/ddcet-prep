@@ -970,14 +970,7 @@
     ans: "c"
   }
 ];
-    // Generating 90 more questions dynamically to complete the 100 count for the prototype requirements
-    for (let i = 11; i <= 100; i++) {
-        questions.push({
-            q: `પ્રશ્ન ${i}: શ્રેણિક અને નિશ્ચાયકના પાયાના સિદ્ધાંત મુજબ ગણતરી કરો. (નમૂના પ્રશ્ન ${i})`,
-            a: `વિકલ્પ A`, b: `વિકલ્પ B`, c: `વિકલ્પ C`, d: `વિકલ્પ D`,
-            ans: ["a", "b", "c", "d"][Math.floor(Math.random() * 4)]
-        });
-    }
+    S
 
     let currentQuestionIndex = 0;
     let userAnswers = new Array(100).fill(null);
