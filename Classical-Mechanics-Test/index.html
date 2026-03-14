@@ -2,40 +2,67 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Classical Mechanics Test</title>
-
+<title>DDCET Classical Mechanics Test</title>
 <style>
-body{
-font-family: Arial;
-max-width:700px;
-margin:auto;
-padding:20px;
-}
-
-button{
-padding:10px;
-margin:5px;
-cursor:pointer;
-}
-
-.correct{color:green;}
-.wrong{color:red;}
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        line-height: 1.6;
+        background-color: #f4f4f9;
+    }
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    button {
+        padding: 12px 20px;
+        margin: 8px 0;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+        transition: 0.3s;
+    }
+    button:hover {
+        background: #e9ecef;
+    }
+    .next-btn {
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+    }
+    .next-btn:hover {
+        background-color: #0056b3;
+    }
+    .correct { color: #28a745; font-weight: bold; }
+    .wrong { color: #dc3545; font-weight: bold; }
+    #solution {
+        margin-top: 20px;
+        padding: 15px;
+        border-left: 5px solid #007bff;
+        background: #f8f9fa;
+        display: none;
+    }
 </style>
-
 </head>
-
 <body>
 
-<h2>DDCET Classical Mechanics Test</h2>
-
-<div id="quiz"></div>
-
-<button onclick="nextQuestion()">Next</button>
-
-<p id="solution"></p>
+<div class="container">
+    <h2>DDCET Classical Mechanics Test</h2>
+    <hr>
+    <div id="quiz"></div>
+    <div id="solution"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next Question</button>
+</div>
 
 <script>
-
 const questions = [
   {
     question: "What is defined as an external effort in the form of push or pull that changes or tries to change the state of rest or motion of an object?",
@@ -186,7 +213,7 @@ const questions = [
     options: ["Linear velocity", "Angular velocity", "Angular acceleration", "Frequency"],
     answer: 1,
     solution: "એકમ સમયમાં થતા કોણીય સ્થાનાંતરને કોણીય વેગ (Angular velocity) કહે છે. [cite: 305]"
-  }
+  },
 {
     question: "કોણીય વેગ (Angular Velocity) ને કયા ગ્રીક અક્ષર દ્વારા દર્શાવવામાં આવે છે?",
     options: ["Alpha (α)", "Beta (β)", "Omega (ω)", "Theta (θ)"],
@@ -336,7 +363,7 @@ const questions = [
     options: ["-6250 N", "6250 N", "-2500 N", "2500 N"],
     answer: 0,
     solution: "F = m(v-u)/t = 1000(0-25)/4 = -25000/4 = -6250 N (ઋણ નિશાની વિરોધ દર્શાવે છે)[cite: 240, 241]."
-  }
+  },
 {
     question: "રેખીય વેગમાન (Linear Momentum) એ કયા પ્રકારની રાશિ છે?",
     options: ["અદિશ (Scalar)", "સદિશ (Vector)", "પરિમાણ રહિત", "એકમ રહિત"],
@@ -486,7 +513,7 @@ const questions = [
     options: ["11.5 m/s", "20 m/s", "5 m/s", "15 m/s"],
     answer: 0,
     solution: "$v = \\sqrt{rg \\tan \\theta} = \\sqrt{50 \\times 9.8 \\times \\tan 15^{\\circ}} = \\sqrt{132.3} \\approx 11.5 \\text{ m/s}$. [cite: 521, 522]"
-  }
+  },
 {
     question: "જો રેસિંગ ટ્રેકની ત્રિજ્યા 600 m હોય અને મહત્તમ ઝડપ 180 km/h (50 m/s) હોય, તો બેન્કિંગ એંગલ કેટલો હોવો જોઈએ?",
     options: ["15°49'", "23°18'", "11°32'", "30°"],
@@ -639,53 +666,42 @@ const questions = [
   }
 ];
 
-let current=0;
+let current = 0;
 
-function loadQuestion(){
-
-let q=questions[current];
-
-let html="<h3>"+q.question+"</h3>";
-
-q.options.forEach((opt,i)=>{
-html+=`<button onclick="check(${i})">${opt}</button><br>`;
-});
-
-document.getElementById("quiz").innerHTML=html;
-document.getElementById("solution").innerHTML="";
+function loadQuestion() {
+    let q = questions[current];
+    let html = "<h3>Question " + (current + 1) + ": " + q.question + "</h3>";
+    q.options.forEach((opt, i) => {
+        html += `<button onclick="check(${i})">${opt}</button>`;
+    });
+    document.getElementById("quiz").innerHTML = html;
+    document.getElementById("solution").style.display = "none";
 }
 
-function check(i){
-
-let q=questions[current];
-
-if(i===q.answer){
-document.getElementById("solution").innerHTML=
-"<p class='correct'>Correct ✔</p>"+q.solution;
-}else{
-document.getElementById("solution").innerHTML=
-"<p class='wrong'>Wrong ❌</p>"+q.solution;
+function check(i) {
+    let q = questions[current];
+    let solutionDiv = document.getElementById("solution");
+    solutionDiv.style.display = "block";
+    
+    if (i === q.answer) {
+        solutionDiv.innerHTML = "<p class='correct'>Correct ✔</p>" + q.solution;
+    } else {
+        solutionDiv.innerHTML = "<p class='wrong'>Wrong ❌</p>" + q.solution;
+    }
 }
 
-}
-
-function nextQuestion(){
-
-current++;
-
-if(current<questions.length){
-loadQuestion();
-}
-else{
-document.getElementById("quiz").innerHTML="Test Finished";
-document.getElementById("solution").innerHTML="";
-}
-
+function nextQuestion() {
+    current++;
+    if (current < questions.length) {
+        loadQuestion();
+    } else {
+        document.getElementById("quiz").innerHTML = "<h3>Test Finished! Excellent work.</h3>";
+        document.getElementById("solution").innerHTML = "";
+        document.querySelector(".next-btn").style.display = "none";
+    }
 }
 
 loadQuestion();
-
 </script>
-
 </body>
 </html>
