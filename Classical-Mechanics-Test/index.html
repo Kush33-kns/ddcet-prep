@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Classical Mechanics Test</title>
+
+<style>
+body{
+font-family: Arial;
+max-width:700px;
+margin:auto;
+padding:20px;
+}
+
+button{
+padding:10px;
+margin:5px;
+cursor:pointer;
+}
+
+.correct{color:green;}
+.wrong{color:red;}
+</style>
+
+</head>
+
+<body>
+
+<h2>DDCET Classical Mechanics Test</h2>
+
+<div id="quiz"></div>
+
+<button onclick="nextQuestion()">Next</button>
+
+<p id="solution"></p>
+
+<script>
+
+const questions = [
+  {
+    question: "What is defined as an external effort in the form of push or pull that changes or tries to change the state of rest or motion of an object?",
+    options: ["Momentum", "Inertia", "Force", "Impulse"],
+    answer: 2,
+    solution: "વ્યાખ્યા મુજબ, પદાર્થની સ્થિર કે ગતિમાન અવસ્થા બદલવા માટે જરૂરી બાહ્ય પરિબળને બળ (Force) કહેવાય છે. [cite: 24]"
+  },
+  {
+    question: "Which of the following is an example of a contact force?",
+    options: ["Gravitational force", "Magnetic force", "Friction force", "Electrostatic force"],
+    answer: 2,
+    solution: "જ્યારે બાહ્ય એજન્સી પદાર્થના સંપર્કમાં હોય ત્યારે તેને સંપર્ક બળ કહેવાય છે. ઘર્ષણ બળ (Friction force) એ સંપર્ક બળનું ઉદાહરણ છે. [cite: 27]"
+  },
+  {
+    question: "Non-contact forces are also known as:",
+    options: ["Contact forces", "Field forces", "Impulsive forces", "Strong forces"],
+    answer: 1,
+    solution: "બાહ્ય પરિબળ પદાર્થના સંપર્કમાં ન હોવા છતાં જે બળ લાગે તેને ક્ષેત્ર બળ (Field forces) કહેવામાં આવે છે. [cite: 31]"
+  },
+  {
+    question: "What is the SI unit of force?",
+    options: ["Dyne", "Newton", "kg m/s", "Watt"],
+    answer: 1,
+    solution: "બળનો SI એકમ ન્યૂટન (N) છે. [cite: 36]"
+  },
+  {
+    question: "What is the CGS unit of force?",
+    options: ["Newton", "Dyne", "Gram", "Erg"],
+    answer: 1,
+    solution: "બળનો CGS એકમ ડાઇન (dyne) છે. [cite: 36]"
+  },
+  {
+    question: "The relation between Newton and Dyne is:",
+    options: ["1 N = 10^3 dyne", "1 N = 10^7 dyne", "1 N = 10^5 dyne", "1 N = 10^4 dyne"],
+    answer: 2,
+    solution: "$1\\text{ Newton} = 10^5\\text{ dyne}$. આ ગણતરી $1000\\text{ g} \\times 100\\text{ cm/s}^2$ પરથી મળે છે. [cite: 48]"
+  },
+  {
+    question: "Linear momentum is the product of:",
+    options: ["Mass and acceleration", "Force and time", "Mass and velocity", "Force and displacement"],
+    answer: 2,
+    solution: "રેખીય વેગમાન એ પદાર્થના દળ (m) અને તેના વેગ (v) નો ગુણાકાર છે. $P = mv$. [cite: 50]"
+  },
+  {
+    question: "The SI unit of linear momentum is:",
+    options: ["kg m/s^2", "kg m/s", "g cm/s", "Newton-second"],
+    answer: 1,
+    solution: "વેગમાનનો SI એકમ kg m/s છે. [cite: 54]"
+  },
+  {
+    question: "If the mass of a body is constant, its linear momentum (p) is directly proportional to its:",
+    options: ["Acceleration", "Force", "Velocity", "Time"],
+    answer: 2,
+    solution: "જો દળ (m) અચળ હોય, તો $p \\propto v$ (વેગ). [cite: 56]"
+  },
+  {
+    question: "Linear momentum is a ______ quantity.",
+    options: ["Scalar", "Vector", "Dimensionless", "Tensor"],
+    answer: 1,
+    solution: "રેખીય વેગમાન એ સદિશ (Vector) રાશિ છે, તેની દિશા વેગની દિશામાં હોય છે. [cite: 53]"
+  },
+  {
+    question: "When a large force acts on a body for a short interval of time, it is called:",
+    options: ["Momentum", "Impulse", "Inertia", "Centripetal force"],
+    answer: 1,
+    solution: "ટૂંકા સમય માટે લાગતા મોટા બળને આઘાત (Impulse) કહેવામાં આવે છે. [cite: 68]"
+  },
+  {
+    question: "Impulse of force is equal to the change in:",
+    options: ["Velocity", "Acceleration", "Linear momentum", "Mass"],
+    answer: 2,
+    solution: "બળનો આઘાત = વેગમાનમાં થતો ફેરફાર. [cite: 80]"
+  },
+  {
+    question: "A cricket player lowers his hands while catching a ball to:",
+    options: ["Increase the force", "Decrease the time of impact", "Increase the time of impact", "Catch the ball faster"],
+    answer: 2,
+    solution: "સમય (t) વધારવાથી લાગતું બળ (F) ઘટે છે ($F = \\Delta p / t$), જેથી હાથમાં ઈજા થતી નથી. [cite: 92, 96]"
+  },
+  {
+    question: "Why are shock absorbers provided in vehicles?",
+    options: ["To increase speed", "To decrease the time of impact", "To increase the time of impact", "To reduce the mass"],
+    answer: 2,
+    solution: "શોક-એબ્સોર્બર સંપર્કનો સમય વધારે છે, જે આઘાતી બળ કે જર્ક ઘટાડે છે. [cite: 116, 117]"
+  },
+  {
+    question: "Calculate the force needed to produce an acceleration of 5 m/s² in an object of mass 3 kg.",
+    options: ["15 N", "1.66 N", "45 N", "8 N"],
+    answer: 0,
+    solution: "સૂત્ર: $F = ma = 3 \\times 5 = 15\\text{ N}$. [cite: 142]"
+  },
+  {
+    question: "In an isolated system, the vector sum of linear momenta of all bodies is:",
+    options: ["Zero", "Conserved", "Increasing", "Decreasing"],
+    answer: 1,
+    solution: "રેખીય વેગમાનના સંરક્ષણના નિયમ મુજબ, અલગ કરેલા તંત્રનું કુલ વેગમાન અચળ (Conserved) રહે છે. [cite: 149]"
+  },
+  {
+    question: "When a bullet is fired from a gun, the gun moves in the opposite direction. This is called:",
+    options: ["Impulse", "Recoil of gun", "Centrifugal force", "Friction"],
+    answer: 1,
+    solution: "બંદૂકમાંથી ગોળી છોડતા બંદૂક પાછળ ધકેલાય છે, જેને 'Recoil of gun' કહે છે. [cite: 164]"
+  },
+  {
+    question: "If m1 is the mass of the bullet and v1 is its velocity, and m2 is the mass of the gun, the recoil velocity v2 is:",
+    options: ["m1v1 / m2", "-m1v1 / m2", "m2v1 / m1", "m1m2 / v1"],
+    answer: 1,
+    solution: "વેગમાન સંરક્ષણ મુજબ: $m_1v_1 + m_2v_2 = 0 \\implies v_2 = -m_1v_1 / m_2$. [cite: 180]"
+  },
+  {
+    question: "A heavier gun will recoil with a ______ velocity compared to a lighter gun for the same bullet.",
+    options: ["Higher", "Smaller", "Same", "Zero"],
+    answer: 1,
+    solution: "$v_2 \\propto 1/m_2$ હોવાથી, જો બંદૂકનું દળ વધારે હોય તો રિકોઇલ વેગ ઓછો હોય. [cite: 185, 186]"
+  },
+  {
+    question: "The motion of a body along a circular path is known as:",
+    options: ["Linear motion", "Circular motion", "Rectilinear motion", "Random motion"],
+    answer: 1,
+    solution: "વર્તુળાકાર પથ પર થતી ગતિને વર્તુળમય ગતિ (Circular motion) કહેવાય છે. [cite: 284]"
+  },
+  {
+    question: "The angle covered by an object in circular motion is called:",
+    options: ["Angular velocity", "Angular displacement", "Angular acceleration", "Radian"],
+    answer: 1,
+    solution: "વર્તુળમય ગતિમાં કપાયેલા ખૂણાને કોણીય સ્થાનાંતર (Angular displacement) કહે છે. [cite: 286]"
+  },
+  {
+    question: "What is the SI unit of angular displacement?",
+    options: ["Degree", "Radian", "Meter", "Hertz"],
+    answer: 1,
+    solution: "કોણીય સ્થાનાંતરનો એકમ રેડિયન (Radian) છે. [cite: 291]"
+  },
+  {
+    question: "How many radians are there in one full circle (360°)?",
+    options: ["π rad", "2π rad", "π/2 rad", "4π rad"],
+    answer: 1,
+    solution: "$360^{\\circ} = 2\\pi$ રેડિયન. [cite: 300]"
+  },
+  {
+    question: "One radian is approximately equal to:",
+    options: ["57.3°", "180°", "90°", "360°"],
+    answer: 0,
+    solution: "$1\\text{ rad} = 360 / (2\\pi) \\approx 57.3^{\\circ}$. [cite: 301]"
+  },
+  {
+    question: "The rate of change of angular displacement is called:",
+    options: ["Linear velocity", "Angular velocity", "Angular acceleration", "Frequency"],
+    answer: 1,
+    solution: "એકમ સમયમાં થતા કોણીય સ્થાનાંતરને કોણીય વેગ (Angular velocity) કહે છે. [cite: 305]"
+  }
+{
+    question: "કોણીય વેગ (Angular Velocity) ને કયા ગ્રીક અક્ષર દ્વારા દર્શાવવામાં આવે છે?",
+    options: ["Alpha (α)", "Beta (β)", "Omega (ω)", "Theta (θ)"],
+    answer: 2,
+    solution: "કોણીય વેગને ગ્રીક અક્ષર ઓમેગા (ω) દ્વારા દર્શાવવામાં આવે છે[cite: 305]."
+  },
+  {
+    question: "કોણીય વેગનો SI એકમ શું છે?",
+    options: ["m/s", "rad/s", "deg/s", "rad/s²"],
+    answer: 1,
+    solution: "કોણીય વેગ = કોણીય સ્થાનાંતર / સમય, તેથી તેનો એકમ rad/s છે[cite: 318]."
+  },
+  {
+    question: "વર્તુળમય ગતિ કરતા પદાર્થને એક ચક્ર પૂર્ણ કરવા માટે લાગતા સમયને શું કહેવાય?",
+    options: ["Frequency", "Time Period", "Angular speed", "Velocity"],
+    answer: 1,
+    solution: "વર્તુળમય ગતિમાં એક રિવોલ્યુશન પૂર્ણ કરવા માટે લાગતા સમયને આવર્તકાળ (Time Period - T) કહે છે[cite: 324]."
+  },
+  {
+    question: "એકમ સમયમાં પદાર્થ જેટલા પરિભ્રમણ પૂર્ણ કરે તેને શું કહેવાય?",
+    options: ["Time Period", "Frequency", "Angular Acceleration", "Linear Velocity"],
+    answer: 1,
+    solution: "એક સેકન્ડમાં પૂર્ણ થતા પરિભ્રમણની સંખ્યાને આવૃત્તિ (Frequency - f) કહેવાય છે[cite: 327]."
+  },
+  {
+    question: "આવૃત્તિ (f) અને આવર્તકાળ (T) વચ્ચેનો સંબંધ શું છે?",
+    options: ["f = T", "f = 1/T", "f = T²", "f = 2πT"],
+    answer: 1,
+    solution: "આવૃત્તિ એ આવર્તકાળનો વ્યસ્ત છે, એટલે કે f = 1/T[cite: 328]."
+  },
+  {
+    question: "આવૃત્તિનો એકમ શું છે?",
+    options: ["Newton", "Joule", "Hertz (Hz)", "Watt"],
+    answer: 2,
+    solution: "આવૃત્તિનો એકમ હર્ટ્ઝ (Hz) છે, જેનો અર્થ પ્રતિ સેકન્ડ પરિભ્રમણ થાય છે[cite: 328]."
+  },
+  {
+    question: "રેખીય વેગ (v) અને કોણીય વેગ (ω) વચ્ચેનો સાચો સંબંધ કયો છે?",
+    options: ["v = r/ω", "v = rω", "v = ω/r", "v = r²ω"],
+    answer: 1,
+    solution: "રેખીય વેગ = ત્રિજ્યા × કોણીય વેગ, એટલે કે v = rω[cite: 352]."
+  },
+  {
+    question: "કોણીય વેગના ફેરફારના દરને શું કહેવામાં આવે છે?",
+    options: ["Angular displacement", "Angular acceleration", "Centripetal force", "Torque"],
+    answer: 1,
+    solution: "કોણીય વેગમાં થતા ફેરફારના દરને કોણીય પ્રવેગ (Angular acceleration - α) કહે છે[cite: 356]."
+  },
+  {
+    question: "રેખીય પ્રવેગ (a) અને કોણીય પ્રવેગ (α) વચ્ચેનો સંબંધ શું છે?",
+    options: ["a = rα", "a = α/r", "a = r/α", "a = r²α"],
+    answer: 0,
+    solution: "રેખીય પ્રવેગ = પરિભ્રમણ અક્ષથી અંતર × કોણીય પ્રવેગ, એટલે કે a = rα[cite: 365, 366]."
+  },
+  {
+    question: "પદાર્થને વર્તુળાકાર પથ પર ગતિમાન રાખવા માટે કેન્દ્ર તરફ લાગતા બળને શું કહે છે?",
+    options: ["Centrifugal force", "Centripetal force", "Gravitational force", "Magnetic force"],
+    answer: 1,
+    solution: "વર્તુળાકાર પથ પર ગતિ જાળવી રાખવા માટે કેન્દ્ર તરફ લાગતા બળને કેન્દ્રગામી બળ (Centripetal force) કહે છે[cite: 372, 373]."
+  },
+  {
+    question: "કેન્દ્રગામી પ્રવેગ (Centripetal acceleration) નું સૂત્ર શું છે?",
+    options: ["v/r", "v²/r", "vr", "v/r²"],
+    answer: 1,
+    solution: "કેન્દ્રગામી પ્રવેગનું સૂત્ર v²/r છે[cite: 409]."
+  },
+  {
+    question: "કેન્દ્રગામી બળ (Centripetal force) નું દળ (m), વેગ (v) અને ત્રિજ્યા (r) ના પદમાં સૂત્ર શું છે?",
+    options: ["mv/r", "mv²/r", "mvr", "mv²/r²"],
+    answer: 1,
+    solution: "બળ = દળ × પ્રવેગ પરથી, કેન્દ્રગામી બળ = mv²/r[cite: 391, 395]."
+  },
+  {
+    question: "જો કોણીય વેગ (ω) આપેલ હોય, તો કેન્દ્રગામી બળનું સૂત્ર શું થાય?",
+    options: ["mrω", "mr²ω", "mrω²", "mω/r"],
+    answer: 2,
+    solution: "v = rω મૂકતા, કેન્દ્રગામી બળ = m(rω)²/r = mrω²[cite: 398, 399]."
+  },
+  {
+    question: "વર્તુળમય ગતિમાં કેન્દ્રથી દૂરની તરફ લાગતા આભાસી બળને શું કહે છે?",
+    options: ["Centripetal force", "Centrifugal force", "Nuclear force", "Friction force"],
+    answer: 1,
+    solution: "વર્તુળમય ગતિમાં કેન્દ્રથી વિરુદ્ધ દિશામાં (બહારની તરફ) લાગતા બળને કેન્દ્રત્યાગી બળ (Centrifugal force) કહે છે[cite: 413]."
+  },
+  {
+    question: "કેન્દ્રત્યાગી બળ (Centrifugal force) વિશે કયું વિધાન સાચું છે?",
+    options: ["તે વાસ્તવિક બળ છે", "તે કેન્દ્ર તરફ લાગે છે", "તે જડત્વનું પરિણામ છે", "તે પદાર્થનું દળ ઘટાડે છે"],
+    answer: 2,
+    solution: "કેન્દ્રત્યાગી બળ એ વાસ્તવિક બળ નથી પરંતુ પદાર્થના જડત્વનું પરિણામ છે જે વર્તુળમય ગતિનો વિરોધ કરે છે[cite: 414, 415]."
+  },
+  {
+    question: "વક્રાકાર રસ્તા પર કાર વળાંક લે ત્યારે જરૂરી કેન્દ્રગામી બળ કોણ પૂરું પાડે છે?",
+    options: ["કારનું એન્જિન", "ટાયર અને રસ્તા વચ્ચેનું ઘર્ષણ બળ", "કારનું વજન", "હવાનો અવરોધ"],
+    answer: 1,
+    solution: "ટાયર અને રસ્તા વચ્ચેનું ઘર્ષણ બળ જરૂરી કેન્દ્રગામી બળ પૂરું પાડે છે[cite: 418, 426]."
+  },
+  {
+    question: "રોડને બેન્કિંગ (Banking) આપવાનો મુખ્ય હેતુ શું છે?",
+    options: ["રસ્તાની સુંદરતા વધારવા", "સ્ક્રિડિંગ (લપસવું) અટકાવવા", "કારની ઝડપ ઘટાડવા", "પેટ્રોલ બચાવવા"],
+    answer: 1,
+    solution: "જ્યારે ઘર્ષણ બળ પૂરતું ન હોય ત્યારે કાર લપસી ન જાય તે માટે રસ્તાને બેન્કિંગ આપવામાં આવે છે[cite: 427, 428]."
+  },
+  {
+    question: "બેન્કિંગ એંગલ (θ), વેગ (v) અને ત્રિજ્યા (R) વચ્ચેનો સંબંધ કયો છે?",
+    options: ["tan θ = Rg/v²", "tan θ = v²/Rg", "sin θ = v/Rg", "cos θ = v²/Rg"],
+    answer: 1,
+    solution: "બેન્કિંગ રોડ માટેનું સૂત્ર tan θ = v²/Rg છે[cite: 444, 447]."
+  },
+  {
+    question: "લેવલ રોડ પર વાહનની મહત્તમ સલામત ઝડપ (v_max) નું સૂત્ર શું છે?",
+    options: ["√(μrg)", "μrg", "√(μ/rg)", "√(rg/μ)"],
+    answer: 0,
+    solution: "સલામત ઝડપ v_max = √(μ_s * r * g)[cite: 464]."
+  },
+  {
+    question: "શું વાહનની મહત્તમ સલામત ઝડપ વાહનના દળ પર આધાર રાખે છે?",
+    options: ["હા", "ના", "માત્ર ભારે વાહનો માટે", "માત્ર હળવા વાહનો માટે"],
+    answer: 1,
+    solution: "મહત્તમ સલામત ઝડપના સૂત્રમાં દળ (m) આવતું નથી, તેથી તે દળ પર આધાર રાખતું નથી[cite: 465]."
+  },
+  {
+    question: "સાયકલ સવાર વળાંક લેતી વખતે કેમ નમે છે?",
+    options: ["ઝડપ વધારવા માટે", "જરૂરી કેન્દ્રગામી બળ મેળવવા માટે", "થાક ઓછો કરવા માટે", "વજન ઘટાડવા માટે"],
+    answer: 1,
+    solution: "સાયકલ સવાર અંદરની તરફ નમીને લંબ પ્રતિક્રિયા બળનો ઘટક મેળવે છે જે કેન્દ્રગામી બળ પૂરું પાડે છે[cite: 468, 469]."
+  },
+  {
+    question: "એક પદાર્થ 0.5 m ત્રિજ્યામાં 2 સેકન્ડમાં 20 પરિભ્રમણ પૂર્ણ કરે છે, તો કોણીય વેગ શોધો.",
+    options: ["10π rad/sec", "20π rad/sec", "40π rad/sec", "5π rad/sec"],
+    answer: 1,
+    solution: "1 પરિભ્રમણ = 2π રેડિયન. 20 પરિભ્રમણ = 40π રેડિયન. ω = θ/t = 40π / 2 = 20π rad/sec[cite: 508, 510, 512]."
+  },
+  {
+    question: "જો પદાર્થનો વેગ 3 m/s થી વધીને 7 m/s થાય અને દળ 5 kg હોય (સમય 2s), તો બળ શોધો.",
+    options: ["5 N", "10 N", "20 N", "15 N"],
+    answer: 1,
+    solution: "F = m(v-u)/t = 5(7-3)/2 = 5(4)/2 = 10 N[cite: 226, 227]."
+  },
+  {
+    question: "એક પદાર્થનું વેગમાન 20 kg m/s છે અને વેગ 5 m/s છે, તો તેનું દળ કેટલું હશે?",
+    options: ["100 kg", "4 kg", "15 kg", "25 kg"],
+    answer: 1,
+    solution: "P = mv => m = P/v = 20/5 = 4 kg[cite: 50, 51]."
+  },
+  {
+    question: "1000 kg ની કાર 90 km/h (25 m/s) ની ઝડપે ચાલે છે. બ્રેક મારતા તે 4s માં ઉભી રહે છે, તો બળ શોધો.",
+    options: ["-6250 N", "6250 N", "-2500 N", "2500 N"],
+    answer: 0,
+    solution: "F = m(v-u)/t = 1000(0-25)/4 = -25000/4 = -6250 N (ઋણ નિશાની વિરોધ દર્શાવે છે)[cite: 240, 241]."
+  }
+{
+    question: "રેખીય વેગમાન (Linear Momentum) એ કયા પ્રકારની રાશિ છે?",
+    options: ["અદિશ (Scalar)", "સદિશ (Vector)", "પરિમાણ રહિત", "એકમ રહિત"],
+    answer: 1,
+    solution: "રેખીય વેગમાન એ સદિશ રાશિ છે કારણ કે તે દિશા અને મૂલ્ય બંને ધરાવે છે. [cite: 53]"
+  },
+  {
+    question: "જ્યારે બે સમાન વેગમાન ધરાવતા પદાર્થોના દળ અલગ-અલગ હોય, ત્યારે કયા પદાર્થનો વેગ વધુ હશે?",
+    options: ["ભારે પદાર્થનો", "હલકા પદાર્થનો", "બંનેનો સમાન હશે", "દળ પર આધારિત નથી"],
+    answer: 1,
+    solution: "વેગમાન સમાન હોય ત્યારે વેગ દળના વ્યસ્ત પ્રમાણમાં હોય છે ($v \\propto 1/M$), તેથી હલકા પદાર્થનો વેગ વધુ હોય છે. [cite: 78]"
+  },
+  {
+    question: "બળનો આઘાત (Impulse) એટલે શું?",
+    options: ["બળ / સમય", "બળ + સમય", "બળ × સમય", "દળ × પ્રવેગ"],
+    answer: 2,
+    solution: "બળ અને તે લાગતા સમયના ગુણાકારને બળનો આઘાત કહેવાય છે. [cite: 70, 83]"
+  },
+  {
+    question: "બળના આઘાતનો SI એકમ કયો છે?",
+    options: ["N/s", "N-s", "kg-m/s²", "Watt-s"],
+    answer: 1,
+    solution: "બળના આઘાતનો SI એકમ ન્યૂટન-સેકન્ડ (Ns) અથવા kg m/s છે. [cite: 85, 86]"
+  },
+  {
+    question: "કાચના વાસણોને પેકિંગ કરતી વખતે કાગળ કે ઘાસમાં કેમ વીંટાળવામાં આવે છે?",
+    options: ["વજન ઘટાડવા", "સુંદરતા માટે", "આઘાતનો સમય વધારવા", "આઘાતનો સમય ઘટાડવા"],
+    answer: 2,
+    solution: "કાગળ કે ઘાસ અથડામણનો સમય વધારે છે, જેનાથી લાગતું સરેરાશ બળ ઘટે છે અને વાસણો તૂટતા નથી. [cite: 107, 108]"
+  },
+  {
+    question: "રેલ્વેના ડબ્બાઓ વચ્ચે બફર્સ (Buffers) કેમ રાખવામાં આવે છે?",
+    options: ["ઝડપ વધારવા", "ઝટકા (Jerks) ઘટાડવા", "ડબ્બાઓ જોડવા", "ઘર્ષણ વધારવા"],
+    answer: 1,
+    solution: "બફર્સ અથડામણનો સમય વધારે છે, જેથી ઝટકા દરમિયાન લાગતું બળ ઘટે છે. [cite: 118, 119]"
+  },
+  {
+    question: "રેખીય વેગમાનના સંરક્ષણનો નિયમ કયા તંત્ર માટે લાગુ પડે છે?",
+    options: ["માત્ર સૂક્ષ્મ (Microscopic)", "માત્ર સ્થૂળ (Macroscopic)", "બંને (Universal)", "એકપણ નહીં"],
+    answer: 2,
+    solution: "રેખીય વેગમાનના સંરક્ષણનો નિયમ સાર્વત્રિક છે, તે સૂક્ષ્મ અને સ્થૂળ બંને તંત્રોને લાગુ પડે છે. [cite: 162]"
+  },
+  {
+    question: "બંદૂકમાંથી ગોળી છોડતા પહેલા કુલ વેગમાન કેટલું હોય છે?",
+    options: ["મહત્તમ", "શૂન્ય", "દળ જેટલું", "અનંત"],
+    answer: 1,
+    solution: "ગોળી છોડતા પહેલા બંદૂક અને ગોળી બંને સ્થિર હોવાથી કુલ વેગમાન શૂન્ય હોય છે. [cite: 170, 176]"
+  },
+  {
+    question: "5 kg ના પદાર્થ પર બળ લગાવતા વેગ 2 m/s થી વધીને 3.5 m/s થાય છે (સમય 2s), તો પ્રવેગ શોધો.",
+    options: ["0.75 m/s²", "1.5 m/s²", "3.0 m/s²", "0.5 m/s²"],
+    answer: 0,
+    solution: "$a = (v - u) / t = (3.5 - 2) / 2 = 1.5 / 2 = 0.75 \\text{ m/s}^2$. [cite: 131]"
+  },
+  {
+    question: "15 N બળ 3 kg દળના પદાર્થ પર લગાવતા કેટલો પ્રવેગ ઉત્પન્ન થશે?",
+    options: ["45 m/s²", "5 m/s²", "0.2 m/s²", "18 m/s²"],
+    answer: 1,
+    solution: "$a = F / m = 15 / 3 = 5 \\text{ m/s}^2$. [cite: 142]"
+  },
+  {
+    question: "જો 20 N બળ દ્વારા 5 m/s² પ્રવેગ ઉત્પન્ન થતો હોય, તો પદાર્થનું દળ શોધો.",
+    options: ["100 kg", "4 kg", "15 kg", "25 kg"],
+    answer: 1,
+    solution: "$m = F / a = 20 / 5 = 4 \\text{ kg}$. [cite: 147]"
+  },
+  {
+    question: "40 kg નો તોપનો ગોળો 15 m/s ની ઝડપે જતો હોય ત્યારે વિસ્ફોટ થઈ બે ભાગમાં વહેંચાય છે. જો 15 kg નો ભાગ સ્થિર થાય, તો 25 kg ના બીજા ભાગનો વેગ કેટલો?",
+    options: ["24 m/s", "15 m/s", "40 m/s", "600 m/s"],
+    answer: 0,
+    solution: "$M_1V_1 + M_2V_2 = MV \\implies (15 \\times 0) + (25 \\times V_2) = (40 \\times 15) \\implies 25V_2 = 600 \\implies V_2 = 24 \\text{ m/s}$. [cite: 193]"
+  },
+  {
+    question: "મશીનગન દર મિનિટે 300 ગોળીઓ છોડે છે. 1 સેકન્ડમાં કેટલી ગોળીઓ છૂટશે?",
+    options: ["300", "60", "5", "10"],
+    answer: 2,
+    solution: "1 મિનિટ = 60 સેકન્ડ. તેથી, 300 / 60 = 5 ગોળીઓ પ્રતિ સેકન્ડ. [cite: 206, 207]"
+  },
+  {
+    question: "1 kg ના હથોડાને 10 m/s ના વેગથી ખીલી પર મારતા તે 5 cm (0.05 m) અંદર જાય છે. પ્રવેગ શોધો.",
+    options: ["-1000 m/s²", "1000 m/s²", "-500 m/s²", "500 m/s²"],
+    answer: 0,
+    solution: "$v^2 - u^2 = 2as \\implies 0^2 - 10^2 = 2 \\times a \\times 0.05 \\implies -100 = 0.1a \\implies a = -1000 \\text{ m/s}^2$. [cite: 250, 252]"
+  },
+  {
+    question: "ચાકગતિ (Rotatory motion) માં પરિભ્રમણ અક્ષ ક્યાં હોઈ શકે?",
+    options: ["માત્ર પદાર્થની અંદર", "માત્ર પદાર્થની બહાર", "પદાર્થની અંદર અથવા બહાર", "માત્ર કેન્દ્રમાં"],
+    answer: 2,
+    solution: "પરિભ્રમણ અક્ષ પદાર્થની અંદર (જેમ કે વ્હીલ) અથવા બહાર (જેમ કે દોરીથી બાંધેલો પથ્થર) હોઈ શકે છે. [cite: 275, 276]"
+  },
+  {
+    question: "કોણીય સ્થાનાંતર (θ) નું ચાપ (s) અને ત્રિજ્યા (r) વચ્ચેના સંબંધનું સૂત્ર શું છે?",
+    options: ["θ = s × r", "θ = s / r", "θ = r / s", "θ = s² / r"],
+    answer: 1,
+    solution: "ખૂણો = ચાપ / ત્રિજ્યા, એટલે કે $\\theta = s / r$. [cite: 290, 295]"
+  },
+  {
+    question: "વર્તુળમય ગતિ કરતા પદાર્થના બધા જ કણો માટે શું સમાન હોય છે?",
+    options: ["રેખીય વેગ", "રેખીય પ્રવેગ", "કોણીય વેગ", "સ્થાનાંતર"],
+    answer: 2,
+    solution: "દ્રઢ પદાર્થના બધા જ કણો એક ચક્ર સમાન સમયમાં પૂર્ણ કરતા હોવાથી તેમનો કોણીય વેગ (ω) સમાન હોય છે. [cite: 304]"
+  },
+  {
+    question: "જો t = T (આવર્તકાળ) હોય, તો કોણીય વેગ (ω) કેટલો થાય?",
+    options: ["π / T", "2π / T", "2πT", "T / 2π"],
+    answer: 1,
+    solution: "એક ચક્રમાં કોણીય સ્થાનાંતર 2π હોય છે, તેથી $\\omega = 2\\pi / T$. [cite: 339, 342]"
+  },
+  {
+    question: "કેન્દ્રગામી બળની દિશા હંમેશા કઈ તરફ હોય છે?",
+    options: ["સ્પર્શકની દિશામાં", "કેન્દ્ર તરફ", "કેન્દ્રથી વિરુદ્ધ", "લંબ દિશામાં"],
+    answer: 1,
+    solution: "કેન્દ્રગામી બળ હંમેશા ત્રિજ્યા પર કેન્દ્ર તરફ લાગતું હોય છે. [cite: 372, 373]"
+  },
+  {
+    question: "કેન્દ્રત્યાગી બળ (Centrifugal force) નું મૂલ્ય કેન્દ્રગામી બળ જેટલું જ પરંતુ કઈ દિશામાં હોય છે?",
+    options: ["સમાન", "વિરુદ્ધ", "લંબ", "કોઈપણ"],
+    answer: 1,
+    solution: "ન્યૂટનના ત્રીજા નિયમ મુજબ, કેન્દ્રત્યાગી બળનું મૂલ્ય સમાન પરંતુ દિશા કેન્દ્રગામી બળથી વિરુદ્ધ (બહાર તરફ) હોય છે. [cite: 411, 413]"
+  },
+  {
+    question: "સાયકલના ટાયર પર મડગાર્ડ (Mudguard) કેમ રાખવામાં આવે છે?",
+    options: ["હવા રોકવા", "કાદવને સ્પર્શકની દિશામાં ઉડતો રોકવા", "ટાયર ગરમ ન થાય તે માટે", "બ્રેક લગાવવા"],
+    answer: 1,
+    solution: "ટાયર પર ચોંટેલો કાદવ ઝડપ વધતા સ્પર્શકની દિશામાં ઉડે છે, જે સવારના કપડાં બગાડે છે. [cite: 422]"
+  },
+  {
+    question: "બેન્કિંગ રોડ પર વાહનના વજન (mg) ને કોણ સંતુલિત કરે છે?",
+    options: ["લંબ પ્રતિક્રિયાનો આડો ઘટક", "લંબ પ્રતિક્રિયાનો ઊભો ઘટક (R cos θ)", "ઘર્ષણ બળ", "કેન્દ્રગામી બળ"],
+    answer: 1,
+    solution: "બેન્કિંગ રોડ પર વાહનના વજનને લંબ પ્રતિક્રિયાનો ઊભો ઘટક (R cos θ) સપોર્ટ કરે છે. [cite: 428, 439]"
+  },
+  {
+    question: "વક્રાકાર રસ્તા પર મહત્તમ સલામત ઝડપ વધારવા માટે શું કરવું જોઈએ?",
+    options: ["ત્રિજ્યા ઘટાડવી", "ત્રિજ્યા વધારવી", "ઘર્ષણ ઘટાડવું", "ઢાળ (Banking) ઘટાડવો"],
+    answer: 1,
+    solution: "સલામત ઝડપ $v = \\sqrt{\\mu rg}$ હોવાથી, ત્રિજ્યા (r) વધારવાથી સલામત ઝડપ વધે છે. [cite: 451, 464]"
+  },
+  {
+    question: "0.5 m ત્રિજ્યામાં પથ્થર 2 સેકન્ડમાં 20 ચક્ર પૂર્ણ કરે તો રેખીય વેગ શોધો.",
+    options: ["10π m/s", "20π m/s", "5π m/s", "40π m/s"],
+    answer: 0,
+    solution: "$\\omega = 20\\pi \\text{ rad/s}$ (અગાઉના દાખલા મુજબ). $v = r\\omega = 0.5 \\times 20\\pi = 10\\pi \\text{ m/s}$. [cite: 512, 513, 515]"
+  },
+  {
+    question: "જો રોડની ત્રિજ્યા 50 m અને બેન્કિંગ એંગલ 15° હોય, તો આદર્શ વેગ કેટલો? (g = 9.8)",
+    options: ["11.5 m/s", "20 m/s", "5 m/s", "15 m/s"],
+    answer: 0,
+    solution: "$v = \\sqrt{rg \\tan \\theta} = \\sqrt{50 \\times 9.8 \\times \\tan 15^{\\circ}} = \\sqrt{132.3} \\approx 11.5 \\text{ m/s}$. [cite: 521, 522]"
+  }
+{
+    question: "જો રેસિંગ ટ્રેકની ત્રિજ્યા 600 m હોય અને મહત્તમ ઝડપ 180 km/h (50 m/s) હોય, તો બેન્કિંગ એંગલ કેટલો હોવો જોઈએ?",
+    options: ["15°49'", "23°18'", "11°32'", "30°"],
+    answer: 1,
+    solution: "tan θ = v² / (rg) = (50)² / (600 × 9.8) = 2500 / 5880 = 0.4252. તેથી θ = tan⁻¹(0.4252) = 23°18'[cite: 533, 534]."
+  },
+  {
+    question: "ટ્રેન 150 m ત્રિજ્યાના વળાંક પર 20 m/s ની ઝડપે ગતિ કરે છે. જો ટ્રેક બેન્ક કરેલો ન હોય, તો આઉટર રેલ પર લાગતું આડું દબાણ (Horizontal thrust) શોધો. (દળ = 10^5 kg)",
+    options: ["2.67 × 10^5 N", "1.5 × 10^5 N", "3.0 × 10^5 N", "4.2 × 10^5 N"],
+    answer: 0,
+    solution: "F = mv² / r = (10⁵ × 20²) / 150 = (10⁵ × 400) / 150 = 2.67 × 10⁵ N[cite: 551]."
+  },
+  {
+    question: "એક વાહન 200 m ત્રિજ્યાના વળાંક પર 72 km/h (20 m/s) ની ઝડપે પ્રવેશ કરે છે. રસ્તો 10° પર બેન્ક કરેલો છે. આ ઝડપે ડ્રાઇવિંગ કરવું કેવું છે?",
+    options: ["સલામત છે", "ખૂબ સલામત છે", "અસલામત છે", "ઝડપ વધારવી જોઈએ"],
+    answer: 2,
+    solution: "સલામત ઝડપ V = √(rg tan θ) = √(200 × 9.8 × tan 10°) = 18.59 m/s. વાહનની ઝડપ 20 m/s હોવાથી તે અસલામત છે[cite: 562, 564]."
+  },
+  {
+    question: "જો રસ્તો 5 m પહોળો હોય અને બેન્કિંગ એંગલ 11°32' હોય, તો અંદરની ધાર કરતા બહારની ધાર કેટલી ઊંચી (Elevation) હોવી જોઈએ?",
+    options: ["0.5 m", "1.5 m", "1 m", "2 m"],
+    answer: 2,
+    solution: "h = l sin θ = 5 × sin(11°32') = 5 × 0.2000 = 1 m[cite: 567]."
+  },
+  {
+    question: "એક મોટરસાઇકલ સવાર 21 m/s ની ઝડપે 0.3 ઘર્ષણાંક ધરાવતા રસ્તા પર વળાંક લે છે. લઘુત્તમ ત્રિજ્યા શોધો.",
+    options: ["100 m", "150 m", "200 m", "120 m"],
+    answer: 1,
+    solution: "r = v² / (μg) = (21 × 21) / (0.3 × 9.8) = 441 / 2.94 = 150 m[cite: 578]."
+  },
+  {
+    question: "30 kg દળના પદાર્થને 1 m ત્રિજ્યામાં 2 rad/sec ની કોણીય ઝડપે ફેરવવામાં આવે તો કેન્દ્રગામી બળ શોધો.",
+    options: ["60 N", "120 N", "30 N", "90 N"],
+    answer: 1,
+    solution: "F = mrω² = 30 × 1 × (2)² = 30 × 4 = 120 N[cite: 591]."
+  },
+  {
+    question: "10 kg ના પદાર્થને 4 m લાંબી દોરીથી 20 m/s ની ઝડપે ફેરવવામાં આવે તો કેન્દ્રત્યાગી બળ કેટલું હશે?",
+    options: ["1000 N", "500 N", "400 N", "2000 N"],
+    answer: 0,
+    solution: "F = mv² / r = (10 × 20²) / 4 = (10 × 400) / 4 = 1000 N[cite: 595]."
+  },
+  {
+    question: "50 kg નો પદાર્થ 2 m ત્રિજ્યામાં 60 m/s ની અચળ ઝડપે ફરે છે. કેન્દ્રગામી પ્રવેગ શોધો.",
+    options: ["1800 m/s²", "1200 m/s²", "3600 m/s²", "900 m/s²"],
+    answer: 0,
+    solution: "a = v² / r = (60)² / 2 = 3600 / 2 = 1800 m/s²[cite: 599]."
+  },
+  {
+    question: "50 kg ના પદાર્થ માટે (v = 60 m/s, r = 2 m) કેન્દ્રગામી બળ કેટલું થશે?",
+    options: ["90000 N", "45000 N", "1800 N", "3000 N"],
+    answer: 0,
+    solution: "F = m × a = 50 × 1800 = 90000 N[cite: 600, 601]."
+  },
+  {
+    question: "જો કોઈ પદાર્થ પર લાગતું પરિણામી બાહ્ય બળ શૂન્ય હોય, તો તેના વેગમાનમાં થતો ફેરફાર કેટલો હશે?",
+    options: ["વધશે", "ઘટશે", "શૂન્ય", "અચળ"],
+    answer: 2,
+    solution: "ન્યૂટનના બીજા નિયમ મુજબ F = dp/dt. જો F = 0, તો dp (વેગમાનનો ફેરફાર) = 0[cite: 73, 150]."
+  },
+  {
+    question: "ઘર્ષણ રહિત 50 m ત્રિજ્યાના વળાંક પર 36 km/h (10 m/s) ની ઝડપે કાર ચાલે છે. બેન્કિંગ એંગલ શોધો. (g = 9.8)",
+    options: ["11°31'", "15°", "20°", "5°"],
+    answer: 0,
+    solution: "tan θ = v² / (rg) = 10² / (50 × 9.8) = 100 / 490 = 0.204. θ = tan⁻¹(0.204) ≈ 11°31'[cite: 823, 824]."
+  },
+  {
+    question: "બે પદાર્થોની અથડામણ દરમિયાન વેગમાનનું સંરક્ષણ થાય છે, ભલે અથડામણ:",
+    options: ["માત્ર સ્થિતિસ્થાપક હોય", "માત્ર અસ્થિતિસ્થાપક હોય", "ગમે તે હોય (Elastic or Inelastic)", "શૂન્ય હોય"],
+    answer: 2,
+    solution: "વેગમાનના સંરક્ષણનો નિયમ સ્થિતિસ્થાપક કે અસ્થિતિસ્થાપક બંને પ્રકારની અથડામણમાં પળાય છે[cite: 161]."
+  },
+  {
+    question: "20 kg ની મશીનગન દર મિનિટે 600 ગોળીઓ (દરેક 25 g) 200 m/s ના વેગથી છોડે છે. રિકોઇલ વેગ શોધો.",
+    options: ["2.5 m/s", "5 m/s", "10 m/s", "0.5 m/s"],
+    answer: 0,
+    solution: "કુલ ગોળીઓનું દળ m = 600 × 0.025 = 15 kg. MV + mv = 0 => 20V + 15(200)/60 = 0. 1 સેકન્ડ માટે ગણતરી કરતા 2.5 m/s મળે[cite: 828, 829]."
+  },
+  {
+    question: "62 kg નો માણસ 238 kg ની સ્થિર હોડીમાં ઊભો છે. જો તે 0.5 kg નો દડો 12 m/s ની ઝડપે આડો ફેંકે, તો હોડીનો વેગ શોધો.",
+    options: ["0.02 m/s", "0.05 m/s", "0.1 m/s", "0.2 m/s"],
+    answer: 0,
+    solution: "વેગમાન સંરક્ષણ: 0 = (62 + 238)V + (0.5 × 12) => 300V = -6 => V = -0.02 m/s[cite: 830, 832, 833]."
+  },
+  {
+    question: "જૂથમાં બેન્કિંગ એંગલ (θ) કઈ બાબત પર આધારિત નથી?",
+    options: ["વાહનનો વેગ", "વળાંકની ત્રિજ્યા", "વાહનનું દળ", "ગુરુત્વાકર્ષણ પ્રવેગ"],
+    answer: 2,
+    solution: "tan θ = v²/Rg મુજબ, તે વાહનના દળ (m) પર આધારિત નથી[cite: 451]."
+  },
+  {
+    question: "ઘર્ષણાંક 0.2 હોય તેવા 100 m ત્રિજ્યાના ટ્રેક પર સાયકલ સવાર અંદરની તરફ નમ્યા વગર કેટલી મહત્તમ ઝડપે વળાંક લઈ શકે?",
+    options: ["14 m/s", "4.9 m/s", "1.4 m/s", "140 m/s"],
+    answer: 0,
+    solution: "v = √(μrg) = √(0.2 × 100 × 9.8) = √196 = 14 m/s[cite: 765, 771]."
+  },
+  {
+    question: "જો રોડની ત્રિજ્યા 20 m થી વધારીને કેટલી કરવામાં આવે તો સલામત ઝડપ 10% વધી જાય? (બેન્કિંગ એંગલ સમાન)",
+    options: ["22 m", "24.2 m", "40 m", "12.1 m"],
+    answer: 1,
+    solution: "v ∝ √r હોવાથી, જો વેગ 1.1 ગણો થાય તો ત્રિજ્યા (1.1)² = 1.21 ગણી થવી જોઈએ. 20 × 1.21 = 24.2 m[cite: 774, 777]."
+  },
+  {
+    question: "108 km/h (30 m/s) ની ઝડપે ચાલતા વાહન માટે μ = 0.5 હોય તો લઘુત્તમ વળાંક ત્રિજ્યા કેટલી? (g=10)",
+    options: ["180 m", "80 m", "40 m", "20 m"],
+    answer: 0,
+    solution: "r = v² / (μg) = 30² / (0.5 × 10) = 900 / 5 = 180 m[cite: 779, 781, 785]."
+  },
+  {
+    question: "180 r.p.m. થી ફરતા ફ્લાયવ્હીલની કોણીય ઝડપ કેટલી?",
+    options: ["2π rad/s", "4π rad/s", "6π rad/s", "3π/2 rad/s"],
+    answer: 2,
+    solution: "f = 180/60 = 3 Hz. ω = 2πf = 2π(3) = 6π rad/s[cite: 792, 796]."
+  },
+  {
+    question: "વર્તુળાકાર ટ્રેકનો પરિઘ 1.256 km છે. જો મહત્તમ સલામત ઝડપ 20 m/s હોય, તો tan θ શોધો. (g=10)",
+    options: ["1/2", "1/3", "1/4", "1/5"],
+    answer: 3,
+    solution: "2πr = 1256 => r = 1256 / 6.28 = 200 m. tan θ = v²/rg = 20² / (200 × 10) = 400 / 2000 = 1/5[cite: 711, 715, 716]."
+  },
+  {
+    question: "ઉર્ધ્વ વર્તુળ ગતિમાં કયા બિંદુએ દોરીમાં તણાવ (Tension) લઘુત્તમ હોય છે?",
+    options: ["સૌથી નીચેના બિંદુએ", "સૌથી ઉપરના બિંદુએ", "મધ્ય બિંદુએ", "35° ના ખૂણે"],
+    answer: 1,
+    solution: "ઉર્ધ્વ વર્તુળ ગતિમાં સૌથી ઉપરના (Highest) બિંદુએ તણાવ સૌથી ઓછો હોય છે[cite: 729, 731, 735]."
+  },
+  {
+    question: "જો કોઈ પદાર્થ પર લાગતું આઘાતી બળ ઋણ હોય, તો તેનો અર્થ શું થાય?",
+    options: ["ગતિની દિશામાં બળ લાગે છે", "ગતિની વિરુદ્ધ દિશામાં બળ લાગે છે", "પદાર્થ સ્થિર છે", "બળ શૂન્ય છે"],
+    answer: 1,
+    solution: "ઋણ નિશાની સૂચવે છે કે લાગતું બળ ગતિની વિરુદ્ધ દિશામાં (અવરોધક બળ) છે[cite: 242, 272]."
+  },
+  {
+    question: "રેખીય વેગમાનમાં ફેરફાર લાવવા માટે શું જરૂરી છે?",
+    options: ["માત્ર આંતરિક બળ", "માત્ર બાહ્ય બળ", "માત્ર વેગ", "માત્ર દળ"],
+    answer: 1,
+    solution: "વેગમાનમાં ફેરફાર કરવા માટે હંમેશા બાહ્ય બળ (External Force) ની જરૂર પડે છે[cite: 25, 150]."
+  },
+  {
+    question: "બે પદાર્થો A અને B ના દળ m_A > m_B છે અને બંનેનું વેગમાન સમાન છે. કોની ગતિ ઊર્જા (અથવા રોકવા માટે જરૂરી બળ) વધુ હશે?",
+    options: ["A ની", "B ની", "બંનેની સમાન", "નિર્ધારિત ન કરી શકાય"],
+    answer: 1,
+    solution: "સમાન વેગમાન માટે, હલકા પદાર્થનો વેગ વધુ હોવાથી તેની અસર (અથવા તેને રોકવા માટેની જરૂરિયાત) અલગ હોઈ શકે છે[cite: 61, 78]."
+  },
+  {
+    question: "એક દડો 5 m ત્રિજ્યામાં 20 m/s ની ઝડપે ફરે છે. બીજો પથ્થર 4 m ત્રિજ્યામાં 16 m/s ની ઝડપે ફરે છે. બંને માટે શું સાચું છે?",
+    options: ["બંનેનો કોણીય વેગ સમાન છે", "બંનેનો કોણીય વેગ અલગ છે", "દડાનો કોણીય વેગ વધુ છે", "પથ્થરનો કોણીય વેગ વધુ છે"],
+    answer: 0,
+    solution: "ω₁ = v₁/r₁ = 20/5 = 4 rad/s. ω₂ = v₂/r₂ = 16/4 = 4 rad/s. તેથી બંનેનો કોણીય વેગ સમાન છે[cite: 674, 676, 689]."
+  }
+];
+
+let current=0;
+
+function loadQuestion(){
+
+let q=questions[current];
+
+let html="<h3>"+q.question+"</h3>";
+
+q.options.forEach((opt,i)=>{
+html+=`<button onclick="check(${i})">${opt}</button><br>`;
+});
+
+document.getElementById("quiz").innerHTML=html;
+document.getElementById("solution").innerHTML="";
+}
+
+function check(i){
+
+let q=questions[current];
+
+if(i===q.answer){
+document.getElementById("solution").innerHTML=
+"<p class='correct'>Correct ✔</p>"+q.solution;
+}else{
+document.getElementById("solution").innerHTML=
+"<p class='wrong'>Wrong ❌</p>"+q.solution;
+}
+
+}
+
+function nextQuestion(){
+
+current++;
+
+if(current<questions.length){
+loadQuestion();
+}
+else{
+document.getElementById("quiz").innerHTML="Test Finished";
+document.getElementById("solution").innerHTML="";
+}
+
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
