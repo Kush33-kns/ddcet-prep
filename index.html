@@ -1,109 +1,370 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDCET Preparation Portal | Master Your Future</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #a855f7;
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
 
-<title>DDCET Online Practice</title>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+        }
 
-<style>
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-body{
-font-family: Arial, sans-serif;
-background:#f2f4f8;
-text-align:center;
-margin:0;
-padding:0;
-}
+        /* --- Animated Mesh Background --- */
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 0% 0%, #1e1b4b 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, #2e1065 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
+        }
 
-header{
-background:#1a73e8;
-color:white;
-padding:20px;
-}
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 20s infinite alternate;
+        }
 
-h1{
-margin:0;
-}
+        .orb-1 { width: 400px; height: 400px; background: var(--primary-glow); top: -100px; left: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: rgba(168, 85, 247, 0.3); bottom: -50px; right: -50px; animation-delay: -5s; }
 
-.container{
-padding:40px;
-}
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.1); }
+        }
 
-.card{
-background:white;
-margin:20px auto;
-padding:25px;
-width:300px;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
+        /* --- Navbar --- */
+        nav {
+            padding: 1.5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
 
-.card h2{
-margin-bottom:15px;
-}
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.btn{
-display:inline-block;
-padding:10px 20px;
-background:#1a73e8;
-color:white;
-text-decoration:none;
-border-radius:6px;
-}
+        /* --- Hero Section --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+        }
 
-.btn:hover{
-background:#1558b0;
-}
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-footer{
-margin-top:40px;
-padding:15px;
-background:#ddd;
-}
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
 
-</style>
+        .btn-main {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        /* --- Test Categories --- */
+        .section-title {
+            text-align: center;
+            margin: 5rem 0 3rem;
+            font-size: 2.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 10% 5rem;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        /* --- Stats Section --- */
+        .stats-bar {
+            background: var(--glass);
+            margin: 5rem 10%;
+            padding: 3rem;
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-item h2 {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+
+        .stat-item p {
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        /* --- Motivation --- */
+        .motivation {
+            background: linear-gradient(90deg, rgba(99,102,241,0.1) 0%, rgba(168,85,247,0.1) 100%);
+            padding: 6rem 10%;
+            text-align: center;
+            border-radius: 0;
+            margin: 5rem 0;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 3rem 10%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 1.2rem 5%; }
+            .hero h1 { font-size: 3rem; }
+            .grid { padding: 0 5% 5rem; }
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-<h1>📚 DDCET Online Practice</h1>
-<p>Prepare for DDCET Entrance Exam</p>
-</header>
+    <div class="bg-canvas"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-<div class="container">
+    <nav>
+        <div class="logo">DDCET.portal</div>
+        <div class="nav-links">
+            <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem;">Sign In</a>
+        </div>
+    </nav>
 
-<div class="card">
-<h2>📏 Units & Measurement</h2>
-<a class="btn" href="Units-Measurement-Test/">Start Test</a>
-</div>
+    <section class="hero">
+        <h1 class="reveal">DDCET Preparation Portal</h1>
+        <p class="reveal">Master your entrance exam with precision-crafted practice tests designed for high-performance students.</p>
+        <a href="#tests" class="btn-main reveal">Start Practice Now</a>
+    </section>
 
-<div class="card">
-<h2>🧪 Chemistry Unit 2</h2>
-<a class="btn" href="Chem-Unit2-Test/">Start Test</a>
-</div>
+    <div class="stats-bar reveal">
+        <div class="stat-item">
+            <h2 class="counter" data-target="50">0</h2>
+            <p>Total Tests</p>
+        </div>
+        <div class="stat-item">
+            <h2 class="counter" data-target="1500">0</h2>
+            <p>Questions</p>
+        </div>
+        <div class="stat-item">
+            <h2 class="counter" data-target="12">0</h2>
+            <p>Subjects Covered</p>
+        </div>
+    </div>
 
-<div class="card">
-<h2>📐 Coordinate Geometry</h2>
-<a class="btn" href="Coordinate-Geometry-Test/">Start Test</a>
-</div>
+    <h2 class="section-title reveal" id="tests">Test Categories</h2>
+    <div class="grid">
+        <a href="Units-Measurement-Test/" class="card reveal">
+            <div class="card-icon">📏</div>
+            <h3>Units & Measurement</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">25 Questions • 30 Mins</p>
+        </a>
+        
+        <a href="Chem-Unit2-Test/" class="card reveal">
+            <div class="card-icon">🧪</div>
+            <h3>Chemistry Unit 2</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">20 Questions • 25 Mins</p>
+        </a>
 
-<div class="card">
-<h2>🧮 Matrices & Determinant</h2>
-<a href="Matrices-Determinant-Test/">Start Test</a>
-</div>
-  
-<div class="card">
-<h2>📊 Trigonometry</h2>
-<a class="btn" href="#">Coming Soon</a>
-</div>
+        <a href="Coordinate-Geometry-Test/" class="card reveal">
+            <div class="card-icon">📐</div>
+            <h3>Coordinate Geometry</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">15 Questions • 20 Mins</p>
+        </a>
 
-</div>
+        <a href="Matrices-Determinant-Test/" class="card reveal">
+            <div class="card-icon">🔢</div>
+            <h3>Matrices & Det.</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">20 Questions • 30 Mins</p>
+        </a>
 
-<footer>
-Made by Kush Suthar | DDCET Preparation
-</footer>
+        <a href="Classical-Mechanics-Test/" class="card reveal">
+            <div class="card-icon">⚙️</div>
+            <h3>Classical Mechanics</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">30 Questions • 45 Mins</p>
+        </a>
 
+        <div class="card disabled reveal">
+            <div class="card-icon">🌀</div>
+            <h3>Trigonometry</h3>
+            <p style="color: #6366f1; font-weight: bold; font-size: 0.8rem;">COMING SOON</p>
+        </div>
+    </div>
+
+    <section class="motivation reveal">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Consistency is the Key to Success</h2>
+        <p style="max-width: 700px; margin: 0 auto; color: #cbd5e1;">Ninety percent of success is showing up every day. Practice consistently, analyze your mistakes, and conquer the DDCET with confidence.</p>
+    </section>
+
+    <footer>
+        <p>Made by <strong>Kush Suthar</strong> | &copy; 2026 DDCET Preparation Portal</p>
+    </footer>
+
+    <script>
+        // Scroll Reveal Animation
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Number Counter Animation
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const speed = 200;
+                const inc = target / speed;
+
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + inc);
+                    setTimeout(updateCount, 15);
+                } else {
+                    counter.innerText = target + "+";
+                }
+            };
+            
+            // Trigger when visible
+            const observerCounter = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting) updateCount();
+            });
+            observerCounter.observe(counter);
+        });
+    </script>
 </body>
 </html>
