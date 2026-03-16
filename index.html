@@ -1,370 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DDCET Preparation Portal | Master Your Future</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.5);
-            --secondary: #a855f7;
-            --bg-dark: #0f172a;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus+Jakarta+Sans', sans-serif;
-        }
+<title>DDCET Preparation Portal</title>
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        /* --- Animated Mesh Background --- */
-        .bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 0% 0%, #1e1b4b 0%, transparent 50%),
-                        radial-gradient(circle at 100% 100%, #2e1065 0%, transparent 50%),
-                        radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            animation: float 20s infinite alternate;
-        }
+<style>
 
-        .orb-1 { width: 400px; height: 400px; background: var(--primary-glow); top: -100px; left: -100px; }
-        .orb-2 { width: 300px; height: 300px; background: rgba(168, 85, 247, 0.3); bottom: -50px; right: -50px; animation-delay: -5s; }
+:root{
+--primary:#6366f1;
+--secondary:#a855f7;
+--bg-dark:#0f172a;
+--glass:rgba(255,255,255,0.04);
+--glass-border:rgba(255,255,255,0.1);
+--text-main:#f8fafc;
+--text-dim:#94a3b8;
+}
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(100px, 50px) scale(1.1); }
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Plus Jakarta Sans',sans-serif;
+}
 
-        /* --- Navbar --- */
-        nav {
-            padding: 1.5rem 10%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--glass-border);
-        }
+body{
+background:var(--bg-dark);
+color:var(--text-main);
+overflow-x:hidden;
+}
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.bg-canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+background:
+radial-gradient(circle at 0% 0%,#1e1b4b 0%,transparent 50%),
+radial-gradient(circle at 100% 100%,#2e1065 0%,transparent 50%),
+radial-gradient(circle at 50% 50%,#020617 0%,#020617 100%);
+}
 
-        /* --- Hero Section --- */
-        .hero {
-            height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 10%;
-        }
+.orb{
+position:absolute;
+border-radius:50%;
+filter:blur(90px);
+z-index:-1;
+animation:float 20s infinite alternate;
+}
 
-        .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.orb1{
+width:400px;
+height:400px;
+background:rgba(99,102,241,0.5);
+top:-100px;
+left:-100px;
+}
 
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-dim);
-            max-width: 600px;
-            margin-bottom: 2.5rem;
-        }
+.orb2{
+width:300px;
+height:300px;
+background:rgba(168,85,247,0.4);
+bottom:-100px;
+right:-100px;
+}
 
-        .btn-main {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-        }
+@keyframes float{
+0%{transform:translate(0,0)}
+100%{transform:translate(100px,60px)}
+}
 
-        .btn-main:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
-        }
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 10%;
+position:sticky;
+top:0;
+backdrop-filter:blur(10px);
+background:rgba(15,23,42,0.8);
+border-bottom:1px solid var(--glass-border);
+z-index:100;
+}
 
-        /* --- Test Categories --- */
-        .section-title {
-            text-align: center;
-            margin: 5rem 0 3rem;
-            font-size: 2.5rem;
-        }
+.logo{
+font-size:22px;
+font-weight:800;
+background:linear-gradient(to right,#fff,var(--primary));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            padding: 0 10% 5rem;
-        }
+.hero{
+height:90vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:0 10%;
+}
 
-        .card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border-radius: 24px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
+.hero h1{
+font-size:clamp(2.5rem,8vw,5rem);
+font-weight:800;
+margin-bottom:20px;
+background:linear-gradient(135deg,#fff,#94a3b8);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
-        .card:hover {
-            transform: translateY(-12px);
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--primary);
-        }
+.hero p{
+max-width:600px;
+color:var(--text-dim);
+font-size:1.2rem;
+margin-bottom:30px;
+}
 
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            filter: drop-shadow(0 0 10px var(--primary-glow));
-        }
+.btn-main{
+padding:14px 35px;
+border-radius:40px;
+border:none;
+cursor:pointer;
+font-weight:600;
+background:linear-gradient(45deg,var(--primary),var(--secondary));
+color:white;
+text-decoration:none;
+transition:.3s;
+}
 
-        .card h3 {
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
+.btn-main:hover{
+transform:translateY(-3px);
+}
 
-        .card.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            filter: grayscale(1);
-        }
+.section-title{
+text-align:center;
+margin:80px 0 40px;
+font-size:2.5rem;
+}
 
-        /* --- Stats Section --- */
-        .stats-bar {
-            background: var(--glass);
-            margin: 5rem 10%;
-            padding: 3rem;
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 2rem;
-            border: 1px solid var(--glass-border);
-        }
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+padding:0 10% 60px;
+}
 
-        .stat-item h2 {
-            font-size: 3rem;
-            color: var(--primary);
-        }
+.card{
+background:var(--glass);
+border:1px solid var(--glass-border);
+padding:30px;
+border-radius:20px;
+text-align:center;
+text-decoration:none;
+color:white;
+transition:.3s;
+}
 
-        .stat-item p {
-            color: var(--text-dim);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-        }
+.card:hover{
+transform:translateY(-10px);
+border-color:var(--primary);
+}
 
-        /* --- Motivation --- */
-        .motivation {
-            background: linear-gradient(90deg, rgba(99,102,241,0.1) 0%, rgba(168,85,247,0.1) 100%);
-            padding: 6rem 10%;
-            text-align: center;
-            border-radius: 0;
-            margin: 5rem 0;
-        }
+.card-icon{
+font-size:40px;
+margin-bottom:15px;
+}
 
-        /* --- Footer --- */
-        footer {
-            padding: 3rem 10%;
-            text-align: center;
-            border-top: 1px solid var(--glass-border);
-            color: var(--text-dim);
-            font-size: 0.9rem;
-        }
+.card.disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
 
-        /* Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
-        }
+.stats-bar{
+margin:80px 10%;
+background:var(--glass);
+border:1px solid var(--glass-border);
+border-radius:20px;
+display:flex;
+justify-content:space-around;
+padding:40px;
+flex-wrap:wrap;
+gap:30px;
+}
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+.stat-item h2{
+font-size:40px;
+color:var(--primary);
+}
 
-        @media (max-width: 768px) {
-            nav { padding: 1.2rem 5%; }
-            .hero h1 { font-size: 3rem; }
-            .grid { padding: 0 5% 5rem; }
-        }
-    </style>
+.stat-item p{
+color:var(--text-dim);
+font-size:13px;
+letter-spacing:2px;
+}
+
+.motivation{
+margin:80px 0;
+padding:70px 10%;
+text-align:center;
+background:linear-gradient(90deg,rgba(99,102,241,.1),rgba(168,85,247,.1));
+}
+
+footer{
+text-align:center;
+padding:30px;
+border-top:1px solid var(--glass-border);
+color:var(--text-dim);
+}
+
+.reveal{
+opacity:0;
+transform:translateY(30px);
+transition:.7s;
+}
+
+.reveal.active{
+opacity:1;
+transform:translateY(0);
+}
+
+</style>
 </head>
+
 <body>
 
-    <div class="bg-canvas"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+<div class="bg-canvas"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
 
-    <nav>
-        <div class="logo">DDCET.portal</div>
-        <div class="nav-links">
-            <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem;">Sign In</a>
-        </div>
-    </nav>
+<nav>
+<div class="logo">DDCET.portal</div>
+</nav>
 
-    <section class="hero">
-        <h1 class="reveal">DDCET Preparation Portal</h1>
-        <p class="reveal">Master your entrance exam with precision-crafted practice tests designed for high-performance students.</p>
-        <a href="#tests" class="btn-main reveal">Start Practice Now</a>
-    </section>
+<section class="hero">
 
-    <div class="stats-bar reveal">
-        <div class="stat-item">
-            <h2 class="counter" data-target="50">0</h2>
-            <p>Total Tests</p>
-        </div>
-        <div class="stat-item">
-            <h2 class="counter" data-target="1500">0</h2>
-            <p>Questions</p>
-        </div>
-        <div class="stat-item">
-            <h2 class="counter" data-target="12">0</h2>
-            <p>Subjects Covered</p>
-        </div>
-    </div>
+<h1 class="reveal">DDCET Preparation Portal</h1>
 
-    <h2 class="section-title reveal" id="tests">Test Categories</h2>
-    <div class="grid">
-        <a href="Units-Measurement-Test/" class="card reveal">
-            <div class="card-icon">📏</div>
-            <h3>Units & Measurement</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem;">25 Questions • 30 Mins</p>
-        </a>
-        
-        <a href="Chem-Unit2-Test/" class="card reveal">
-            <div class="card-icon">🧪</div>
-            <h3>Chemistry Unit 2</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem;">20 Questions • 25 Mins</p>
-        </a>
+<p class="reveal">
+Practice high quality questions and master your DDCET entrance exam.
+</p>
 
-        <a href="Coordinate-Geometry-Test/" class="card reveal">
-            <div class="card-icon">📐</div>
-            <h3>Coordinate Geometry</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem;">15 Questions • 20 Mins</p>
-        </a>
+<a href="#tests" class="btn-main reveal">Start Practice</a>
 
-        <a href="Matrices-Determinant-Test/" class="card reveal">
-            <div class="card-icon">🔢</div>
-            <h3>Matrices & Det.</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem;">20 Questions • 30 Mins</p>
-        </a>
+</section>
 
-        <a href="Classical-Mechanics-Test/" class="card reveal">
-            <div class="card-icon">⚙️</div>
-            <h3>Classical Mechanics</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem;">30 Questions • 45 Mins</p>
-        </a>
+<div class="stats-bar reveal">
 
-        <div class="card disabled reveal">
-            <div class="card-icon">🌀</div>
-            <h3>Trigonometry</h3>
-            <p style="color: #6366f1; font-weight: bold; font-size: 0.8rem;">COMING SOON</p>
-        </div>
-    </div>
+<div class="stat-item">
+<h2 class="counter" data-target="50">0</h2>
+<p>Total Tests</p>
+</div>
 
-    <section class="motivation reveal">
-        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Consistency is the Key to Success</h2>
-        <p style="max-width: 700px; margin: 0 auto; color: #cbd5e1;">Ninety percent of success is showing up every day. Practice consistently, analyze your mistakes, and conquer the DDCET with confidence.</p>
-    </section>
+<div class="stat-item">
+<h2 class="counter" data-target="1500">0</h2>
+<p>Questions</p>
+</div>
 
-    <footer>
-        <p>Made by <strong>Kush Suthar</strong> | &copy; 2026 DDCET Preparation Portal</p>
-    </footer>
+<div class="stat-item">
+<h2 class="counter" data-target="12">0</h2>
+<p>Subjects Covered</p>
+</div>
 
-    <script>
-        // Scroll Reveal Animation
-        const observerOptions = { threshold: 0.1 };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
+</div>
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+<h2 class="section-title reveal" id="tests">Test Categories</h2>
 
-        // Number Counter Animation
-        const counters = document.querySelectorAll('.counter');
-        counters.forEach(counter => {
-            const updateCount = () => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
-                const speed = 200;
-                const inc = target / speed;
+<div class="grid">
 
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + inc);
-                    setTimeout(updateCount, 15);
-                } else {
-                    counter.innerText = target + "+";
-                }
-            };
-            
-            // Trigger when visible
-            const observerCounter = new IntersectionObserver((entries) => {
-                if(entries[0].isIntersecting) updateCount();
-            });
-            observerCounter.observe(counter);
-        });
-    </script>
+<a href="Units-Measurement-Test/" class="card reveal">
+<div class="card-icon">📏</div>
+<h3>Units & Measurement</h3>
+<p style="color:#94a3b8;font-size:14px;">25 Questions • 30 Mins</p>
+</a>
+
+<a href="Chem-Unit2-Test/" class="card reveal">
+<div class="card-icon">🧪</div>
+<h3>Chemistry Unit 2</h3>
+<p style="color:#94a3b8;font-size:14px;">20 Questions • 25 Mins</p>
+</a>
+
+<a href="Coordinate-Geometry-Test/" class="card reveal">
+<div class="card-icon">📐</div>
+<h3>Coordinate Geometry</h3>
+<p style="color:#94a3b8;font-size:14px;">15 Questions • 20 Mins</p>
+</a>
+
+<a href="Matrices-Determinant-Test/" class="card reveal">
+<div class="card-icon">🔢</div>
+<h3>Matrices & Determinant</h3>
+<p style="color:#94a3b8;font-size:14px;">20 Questions • 30 Mins</p>
+</a>
+
+<a href="Classical-Mechanics-Test/" class="card reveal">
+<div class="card-icon">⚙️</div>
+<h3>Classical Mechanics</h3>
+<p style="color:#94a3b8;font-size:14px;">30 Questions • 45 Mins</p>
+</a>
+
+<a href="Metals-NonMetals-Test/" class="card reveal">
+<div class="card-icon">⚗️</div>
+<h3>Metals & Non-Metals</h3>
+<p style="color:#94a3b8;font-size:14px;">100 Questions • Practice</p>
+</a>
+
+<div class="card disabled reveal">
+<div class="card-icon">🌀</div>
+<h3>Trigonometry</h3>
+<p style="color:#6366f1;font-size:12px;font-weight:bold;">COMING SOON</p>
+</div>
+
+</div>
+
+<section class="motivation reveal">
+
+<h2 style="margin-bottom:15px;font-size:2rem;">
+Consistency is the Key to Success
+</h2>
+
+<p style="max-width:700px;margin:auto;color:#cbd5e1;">
+Practice daily, analyze mistakes, and improve step by step to conquer DDCET.
+</p>
+
+</section>
+
+<footer>
+
+<p>
+Made by <strong>Kush Suthar</strong> | © 2026 DDCET Preparation Portal
+</p>
+
+</footer>
+
+<script>
+
+const observer=new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("active")
+}
+})
+})
+
+document.querySelectorAll(".reveal").forEach(el=>observer.observe(el))
+
+const counters=document.querySelectorAll(".counter")
+
+counters.forEach(counter=>{
+
+const update=()=>{
+
+const target=+counter.getAttribute("data-target")
+const count=+counter.innerText
+const inc=target/200
+
+if(count<target){
+
+counter.innerText=Math.ceil(count+inc)
+setTimeout(update,15)
+
+}else{
+
+counter.innerText=target+"+"
+
+}
+
+}
+
+const obs=new IntersectionObserver(e=>{
+if(e[0].isIntersecting) update()
+})
+
+obs.observe(counter)
+
+})
+
+</script>
+
 </body>
 </html>
